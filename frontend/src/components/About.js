@@ -18,7 +18,7 @@ function About() {
                   <p className="card-text custom-card-text justified-text">
                     Martín Cárdenas es considerado como el botánico más importante que ha tenido Bolivia. Realizó extensas expediciones botánicas por todo el territorio nacional recolectando especímenes de la flora local, de la cual llegó
                     a reunir 6500 ejemplares. Su prestigio traspasó las fronteras. La mayor parte de sus exploraciones las
-                    realizó con medios propios demostrando que con voluntad y decisión se puede investigar en Bolivia, pese a no tener las condiciones favorables.
+                    realizó con medios propios demostrando que con voluntad y decisión se puede investigar en Bolivia, pese a no tener las condiciones favorables. //
                         <br></br>
                         
                   </p>
