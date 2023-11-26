@@ -15,7 +15,8 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'mysql'),
+    //'default' => env('DB_CONNECTION', 'mysql'),
+    'default' => env('DB_CONNECTION_FIREBASE', 'firebase'),
 
     /*
     |--------------------------------------------------------------------------
@@ -89,6 +90,22 @@ return [
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
+        ],
+
+        'firebase' => [
+            'driver' => 'firebase',
+            'url' => env('FIREBASE_DATABASE_URL'),
+            'database' => env('DB_DATABASE', 'forge'),
+            'prefix' => '',
+            'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
+            'storage' => [
+                'driver' => 'gcs',
+                'project_id' => env('GOOGLE_CLOUD_PROJECT_ID', 'forge'),
+                'key_file' => env('GOOGLE_CLOUD_KEY_FILE', null),
+                'bucket' => env('GOOGLE_CLOUD_STORAGE_BUCKET', 'forge'),
+                'path_prefix' => env('GOOGLE_CLOUD_STORAGE_PATH_PREFIX', null),
+                'storage_api_uri' => env('GOOGLE_CLOUD_STORAGE_API_URI', null),
+            ],
         ],
 
     ],
