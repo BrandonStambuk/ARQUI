@@ -1,0 +1,35 @@
+body, html {
+    margin: 0;
+    padding: 0;
+  }
+.container-imagen-jardin {
+    content: "";
+    background-image: url('../images/jardin3.jpg');
+    background-size: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+ 
+  }
+
+.descripcion-botanica {
+    text-align: left;
+    text-align: justify;
+}
+
+
+.para-que-sirve{
+    text-align: left;
+    text-align: justify;
+}
+
+.como-utilizar {
+    text-align: left;
+    text-align: justify;
+}
+.card-translucent {
+    margin-top: 50px;
+  }

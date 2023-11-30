@@ -3,10 +3,11 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/ImageSection.css';
 import imageMartinCardenas from '../images/martinCardenas.jpg'; // Importa la imagen
-
+import Navbar from './Navbar';
 function About() {
   return (
     <div className="container-imagen-aloe">
+      <Navbar></Navbar>
       <div className="row justify-content-center align-items-center vh-100 imagen-aloe">
         <div className="col-md-8"> {/* Aumenta el ancho del card a 8 columnas en pantallas grandes */}
           <div className="card text-center b-0">
@@ -18,8 +19,12 @@ function About() {
                   <p className="card-text custom-card-text justified-text">
                     Martín Cárdenas es considerado como el botánico más importante que ha tenido Bolivia. Realizó extensas expediciones botánicas por todo el territorio nacional recolectando especímenes de la flora local, de la cual llegó
                     a reunir 6500 ejemplares. Su prestigio traspasó las fronteras. La mayor parte de sus exploraciones las
-                    realizó con medios propios demostrando que con voluntad y decisión se puede investigar en Bolivia, pese a no tener las condiciones favorables. //
+                    realizó con medios propios demostrando que con voluntad y decisión se puede investigar en Bolivia, pese a no tener las condiciones favorables. 
                         <br></br>
+                        <br></br>
+                        La educación básica la realizó en el Seminario Conciliar y en la Escuela Municipal Bolívar. La secundaria en los colegios fiscales Nacional Bolívar y Sucre de Cochabamba.
+
+En 1918, se graduó de bachiller en Ciencias y Letras y consiguió una beca para continuar sus estudios en el Instituto Normal Superior de La Paz, donde se especializó en Ciencias Naturales y Química (1922). En sus vacaciones en Cochabamba realizaba caminatas por sus alrededores recogiendo plantas, de las que luego buscaba sus características en los libros y revistas de la Biblioteca Municipal de La Paz.
                         
                   </p>
                 </div>
