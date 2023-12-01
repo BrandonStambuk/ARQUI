@@ -3,11 +3,21 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/Plant.css'; // Asegúrate de tener un archivo CSS correspondiente
 import Navbar from './Navbar';
-
-
+import jardin from "../images/jardin3.jpg";
 function Plant() {
+  const estiloFondo = {
+    backgroundImage: `url(${jardin})`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+  // ARREGLAR TAMAÑO DE FONDO
+  
+  };
   return (
-    <div className="container-imagen-jardin">
+
+
+
+    
+    <div className="container-imagen-jardin" style={estiloFondo}>
       <Navbar />
       <div className="row justify-content-center align-items-center">
         <div className="col-md-6">

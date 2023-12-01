@@ -2,12 +2,13 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/ImageSection.css';
 import Navbar from './Navbar';
-
+import imageAloe from "../images/jardin2.jpg";
 function ImageSection() {
+  
   return (
     <div>
       <Navbar></Navbar>
-      <div className="container-imagen">
+      <div className="container-imagen" >
         <div className="imagen-jardin">
           <div className="col-md-12">
             <div className="row justify-content-center">
