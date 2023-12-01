@@ -3,7 +3,7 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/Plant.css'; // Asegúrate de tener un archivo CSS correspondiente
 import Navbar from './Navbar';
-import imageMartinCardenas from '../images/martinCardenas.jpg'; // Importa la imagen
+
 
 function Plant() {
   return (
