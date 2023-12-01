@@ -17,6 +17,7 @@ function About() {
     backgroundImage: `url(${imageAloe})`,
     backgroundSize: 'cover',
     backgroundPosition: 'center',
+    height: "200vh", // Ajusta la altura según tus necesidades
   };
 
   return (

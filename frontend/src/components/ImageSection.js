@@ -2,17 +2,29 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/ImageSection.css';
 import Navbar from './Navbar';
-import imageAloe from "../images/jardin2.jpg";
+import Carrousel from './Carrousel';
+import jardin2 from "../images/jardin2.jpg";
+import imagen1 from "../images/j1.jpg";
+import imagen2 from "../images/j2.jpg";
+
 function ImageSection() {
+  const estiloFondo = {
+    backgroundImage: `url(${jardin2})`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+  // ARREGLAR TAMAÑO DE FONDO
   
+  };
+
+  const images = [imagen1, imagen2];
   return (
     <div>
       <Navbar></Navbar>
-      <div className="container-imagen" >
+      <div className="container-imagen" style={estiloFondo}>
         <div className="imagen-jardin">
           <div className="col-md-12">
             <div className="row justify-content-center">
-              <div className="col-md-12 col-sm-6 text-center">
+              <div className="col-md-12 col-sm-12 text-center">
                 <h1 className="text-left title" style={{ marginTop: '20px' }}>
                   Descubre la belleza natural
                   
@@ -34,10 +46,12 @@ function ImageSection() {
                 <p className="text-left foot text-justify" style={{ marginTop: '10px' }}>
                   Ubicado en la ciudad de Cochabamba, Bolivia!
                 </p>
+                <Carrousel images={images}></Carrousel>
               </div>
             </div>
           </div>
         </div>
+        
       </div>
     </div>
   );
