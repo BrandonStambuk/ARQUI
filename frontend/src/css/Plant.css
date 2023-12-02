@@ -1,0 +1,24 @@
+body, html {
+    margin: 0;
+    padding: 0;
+  }
+
+
+.descripcion-botanica {
+    text-align: left;
+    text-align: justify;
+}
+
+
+.para-que-sirve{
+    text-align: left;
+    text-align: justify;
+}
+
+.como-utilizar {
+    text-align: left;
+    text-align: justify;
+}
+.card-translucent {
+    margin-top: 50px;
+  }

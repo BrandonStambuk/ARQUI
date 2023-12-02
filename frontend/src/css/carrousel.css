@@ -1,0 +1,28 @@
+/* carrousel.css */
+
+/* Estilos para los botones */
+button {
+    background-color: #007bff; /* Color de fondo */
+    color: #fff; /* Color del texto */
+    border: none; /* Quita el borde */
+    padding: 10px 20px; /* Espaciado interno */
+    margin: 5px; /* Margen entre los botones */
+    cursor: pointer; /* Cambia el cursor al pasar el ratón */
+    border-radius: 5px; /* Bordes redondeados */
+    font-size: 16px; /* Tamaño de fuente */
+    outline: none; /* Quita el contorno en foco */
+  }
+  
+  button:hover {
+    background-color: #0056b3; /* Cambia el color al pasar el ratón */
+  }
+  
+  /* Estilo específico para el botón "Anterior" */
+  button:first-child {
+    margin-left: 0; /* Quita el margen izquierdo del primer botón */
+  }
+  
+  /* Estilo específico para el botón "Siguiente" */
+  button:last-child {
+    margin-right: 0; /* Quita el margen derecho del último botón */
+  }
