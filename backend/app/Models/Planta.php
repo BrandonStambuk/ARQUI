@@ -53,4 +53,50 @@ class Planta extends Model
     }
 
 
+    public function actualizarPlanta($id, $nombre, $descripcion, $imagen = null){
+        $storage = app('firebase.storage');
+        $bucket = $storage->getBucket();
+    
+        // Verificar si se proporciona una nueva imagen
+        if ($imagen) {
+            $nombreImagen = $imagen->getClientOriginalName();
+            $path = 'Images/' . $nombreImagen;
+    
+            $bucket->upload(
+                file_get_contents($imagen->getPathName()),
+                ['name' => $path]
+            );
+        }
+    
+        // Guardar los datos de la planta en Firestore
+        $database = app('firebase.database');
+        $reference = $database->getReference($this->tablename);
+    
+        $plantaData = [
+            'nombre' => $nombre,
+            'descripcion' => $descripcion,
+        ];
+        
+        $key = $id;
+        // Agregar la información de la imagen solo si se proporciona una nueva imagen
+        if ($imagen) {
+            $plantaData['imagen'] = $path;
+        }
+    
+        //$reference->getChild($id)->update($plantaData);
+        $res_updated = $this->database->getReference($this->tablename.'/'.$key)->update($plantaData);
+    
+        return $res_updated;
+    }
+
+    public function eliminarPlanta($id){
+        $database = app('firebase.database');
+        $reference = $database->getReference($this->tablename);
+
+        $reference->getChild($id)->remove();
+
+        return $reference;
+    }
+
+
 }

@@ -32,4 +32,20 @@ class PlantaController extends Controller
             //'imagen_path' => $imagenPath,
         ]);
     }
+
+    public function update(Request $request, $id)
+    {
+        $nombre = $request->nombre;
+        $descripcion = $request->descripcion;
+        $imagen = $request->file('imagen');
+
+        $reference = $this->plantaModel->actualizarPlanta($id, $nombre, $descripcion, $imagen);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Planta actualizada correctamente',
+            //'key' => $reference->getKey(),
+            //'imagen_path' => $imagenPath,
+        ]);
+    }
 }
