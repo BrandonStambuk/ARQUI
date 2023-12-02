@@ -15,9 +15,11 @@ use App\Http\Controllers\Firebase\PlantaController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+/*Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
-});
+});*/
 
 Route::post('insertarPlanta', [PlantaController::class, 'store']);
 Route::put('actualizarPlanta/{uuid}', [PlantaController::class, 'update']);
+Route::delete('eliminarPlanta/{uuid}', [PlantaController::class, 'destroy']);
+Route::get('obtenerPlantas', [PlantaController::class, 'index']);

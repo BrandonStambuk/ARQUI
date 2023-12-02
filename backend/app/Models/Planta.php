@@ -53,12 +53,12 @@ class Planta extends Model
     }
 
 
-    public function actualizarPlanta($id, $nombre, $descripcion, $imagen = null){
+    public function actualizarPlanta($id, $nombre, $descripcion, $imagen) {
         $storage = app('firebase.storage');
         $bucket = $storage->getBucket();
     
-        // Verificar si se proporciona una nueva imagen
-        if ($imagen) {
+        // Verificar si se proporciona una nueva imagen y si es válida
+        if ($imagen && $imagen->isValid()) {
             $nombreImagen = $imagen->getClientOriginalName();
             $path = 'Images/' . $nombreImagen;
     
@@ -66,6 +66,9 @@ class Planta extends Model
                 file_get_contents($imagen->getPathName()),
                 ['name' => $path]
             );
+    
+            // Agregar la información de la imagen solo si se proporciona una nueva imagen
+            $plantaData['imagen'] = $path;
         }
     
         // Guardar los datos de la planta en Firestore
@@ -76,18 +79,17 @@ class Planta extends Model
             'nombre' => $nombre,
             'descripcion' => $descripcion,
         ];
-        
-        $key = $id;
+    
         // Agregar la información de la imagen solo si se proporciona una nueva imagen
-        if ($imagen) {
+        /*if ($imagen) {
             $plantaData['imagen'] = $path;
-        }
+        }*/
     
-        //$reference->getChild($id)->update($plantaData);
-        $res_updated = $this->database->getReference($this->tablename.'/'.$key)->update($plantaData);
+        $reference->getChild($id)->update($plantaData);
     
-        return $res_updated;
+        return $reference;
     }
+    
 
     public function eliminarPlanta($id){
         $database = app('firebase.database');
@@ -98,5 +100,13 @@ class Planta extends Model
         return $reference;
     }
 
+    public function obtenerPlantas(){
+        $database = app('firebase.database');
+        $reference = $database->getReference($this->tablename);
+
+        $plantas = $reference->getValue();
+
+        return $plantas;
+    }
 
 }

@@ -22,8 +22,13 @@ class PlantaController extends Controller
         $nombre = $request->nombre;
         $descripcion = $request->descripcion;
         $imagen = $request->file('imagen');
+        //$imagenes = $request->file('imagen');
 
         $reference = $this->plantaModel->crearPlanta($nombre, $descripcion, $imagen);
+        /*foreach ($imagenes as $imagen) {
+            $reference = $this->plantaModel->crearPlanta($nombre, $descripcion, $imagen);
+        }*/
+    
 
         return response()->json([
             'success' => true,
@@ -46,6 +51,29 @@ class PlantaController extends Controller
             'message' => 'Planta actualizada correctamente',
             //'key' => $reference->getKey(),
             //'imagen_path' => $imagenPath,
+        ]);
+    }
+
+    public function destroy($id)
+    {
+        $reference = $this->plantaModel->eliminarPlanta($id);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Planta eliminada correctamente',
+            //'key' => $reference->getKey(),
+            //'imagen_path' => $imagenPath,
+        ]);
+    }
+
+    public function index()
+    {
+        $plantas = $this->plantaModel->obtenerPlantas();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Plantas obtenidas correctamente',
+            'plantas' => $plantas,
         ]);
     }
 }

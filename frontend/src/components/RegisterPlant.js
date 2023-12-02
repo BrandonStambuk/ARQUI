@@ -3,16 +3,25 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../css/ImageSection.css";
 import Navbar from "./Navbar";
 import jardin2 from "../images/jardin2.jpg";
+import axios from "axios";
+
+const endpoint = "http://127.0.0.1:8000/api";
 
 function RegisterPlant() {
   const [plantData, setPlantData] = useState({
-    plantName: "",
-    scientificName: "",
-    botanicalDescription: "",
-    purpose: "",
-    howToUse: "",
-    images: [],
+    nombre: "",
+    //scientificName: "",
+    descripcion: "",
+    //purpose: "",
+    //howToUse: "",
+    imagen: [],
   });
+
+  /*const handleStorePlanta = async () => {
+    e.preventDefault();
+    console.log("Datos de la planta:", plantData);
+    await axios.post(`${endpoint}/plantas`, plantData);
+  }*/
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -30,10 +39,26 @@ function RegisterPlant() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     // Realiza la lógica de registro aquí, por ejemplo, envía los datos al servidor
     console.log("Datos de la planta:", plantData);
+
+
+    try {
+      const formData = new FormData();
+      formData.append("nombre", plantData.nombre);
+      formData.append("descripcion", plantData.descripcion);
+      formData.append("imagen", plantData.imagen[0]);
+      console.log(formData);
+      const res = await axios.post(`${endpoint}/insertarPlanta`, formData);
+      console.log(res);
+      console.log("hola");
+    } catch (err) {
+      console.log(err);
+    }
+    //await axios.post(`${endpoint}/insertarPlanta`, plantData);
+
   };
 
   const estiloFondo = {
@@ -59,67 +84,36 @@ function RegisterPlant() {
                 <h5 className="card-titulo">Registrar una Planta</h5>
                 <form onSubmit={handleSubmit}>
                   <div className="mb-3">
-                    <label htmlFor="plantName" className="form-label">Nombre de la Planta</label>
+                    <label htmlFor="nombre" className="form-label">Nombre de la Planta</label>
                     <input
                       type="text"
                       className="form-control"
-                      id="plantName"
-                      name="plantName"
-                      value={plantData.plantName}
+                      id="nombre"
+                      name="nombre"
+                      value={plantData.nombre}
                       onChange={handleInputChange}
                     />
                   </div>
+
                   <div className="mb-3">
-                    <label htmlFor="scientificName" className="form-label">Nombre Científico</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="scientificName"
-                      name="scientificName"
-                      value={plantData.scientificName}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="botanicalDescription" className="form-label">Descripción Botánica</label>
+                    <label htmlFor="descripcion" className="form-label">Descripción Botánica</label>
                     <textarea
                       className="form-control"
-                      id="botanicalDescription"
-                      name="botanicalDescription"
+                      id="descripcion"
+                      name="descripcion"
                       rows="3"
-                      value={plantData.botanicalDescription}
+                      value={plantData.descripcion}
                       onChange={handleInputChange}
                     ></textarea>
                   </div>
+                  
                   <div className="mb-3">
-                    <label htmlFor="purpose" className="form-label">Propósito de la Planta</label>
-                    <textarea
-                      className="form-control"
-                      id="purpose"
-                      name="purpose"
-                      rows="3"
-                      value={plantData.purpose}
-                      onChange={handleInputChange}
-                    ></textarea>
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="howToUse" className="form-label">Cómo Utilizar la Planta</label>
-                    <textarea
-                      className="form-control"
-                      id="howToUse"
-                      name="howToUse"
-                      rows="3"
-                      value={plantData.howToUse}
-                      onChange={handleInputChange}
-                    ></textarea>
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="images" className="form-label">Imágenes</label>
+                    <label htmlFor="imagen" className="form-label">Imágenes</label>
                     <input
                       type="file"
                       className="form-control"
-                      id="images"
-                      name="images"
+                      id="imagen"
+                      name="imagen"
                       multiple
                       onChange={handleImageChange}
                     />
