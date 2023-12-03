@@ -8,6 +8,7 @@ import Login from './components/Login';
 import RegisterPlant from './components/RegisterPlant';
 import Table from './components/Table';
 import Types from './components/Types';
+import EditPlant from './components/EditPlant';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
           <Route path="/register" element={<RegisterPlant />} />
           <Route path="/table" element={<Table/>} />
           <Route path="/types" element={<Types/>} />
+          <Route path="/editPlant/:id" element={<EditPlant />} />
         </Routes>
       </BrowserRouter>
     </div>
