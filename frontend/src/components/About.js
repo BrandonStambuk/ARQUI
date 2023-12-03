@@ -6,17 +6,12 @@ import imageMartinCardenas from "../images/martinCardenas.jpg"; // Importa la im
 import imageAloe from "../images/aloe-vera.jpg";
 import Navbar from "./Navbar";
 
-
-
-
-
-
 function About() {
-
+  // Estilo para el fondo con la imagen de aloe
   const estiloFondo = {
     backgroundImage: `url(${imageAloe})`,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
+    backgroundSize: "cover",
+    backgroundPosition: "center",
     height: "200vh", // Ajusta la altura según tus necesidades
   };
 
@@ -25,14 +20,12 @@ function About() {
       <Navbar></Navbar>
       <div className="row justify-content-center align-items-center vh-100 imagen-aloe">
         <div className="col-md-8">
-          {" "}
           {/* Aumenta el ancho del card a 8 columnas en pantallas grandes */}
           <div className="card text-center b-0">
             <div className="card-body">
               <div className="row">
-                <div className="col-md-6">
-                  {" "}
-                  {/* Ocupa 6 columnas en pantallas grandes */}
+                <div className="col-md-12">
+                  {/* Contenido de texto con imagen integrada */}
                   <h5 className="card-title" id="about">
                     Sobre Martin Cardenas
                   </h5>
@@ -47,8 +40,13 @@ function About() {
                     con medios propios demostrando que con voluntad y decisión
                     se puede investigar en Bolivia, pese a no tener las
                     condiciones favorables.
-                    <br></br>
-                    <br></br>
+                    <br />
+                    <br />
+                    <img
+                      src={imageMartinCardenas}
+                      alt="Martin Cardenas"
+                      style={{ width: "250px", height: "316px", float: "left", marginRight: "10px" }}
+                    />
                     La educación básica la realizó en el Seminario Conciliar y
                     en la Escuela Municipal Bolívar. La secundaria en los
                     colegios fiscales Nacional Bolívar y Sucre de Cochabamba. En
@@ -59,20 +57,13 @@ function About() {
                     Cochabamba realizaba caminatas por sus alrededores
                     recogiendo plantas, de las que luego buscaba sus
                     características en los libros y revistas de la Biblioteca
-                    Municipal de La Paz.
+                    Municipal de La Paz. Por entonces le presentaron al botánico
+                    sueco Erik Asplund, que había realizado muchos viajes por
+                    Bolivia recogiendo plantas para su herbario. Cárdenas lo
+                    acompañó en varias de sus travesías y aprendió en gran
+                    medida en su compañía lo que afianzó su vocación de
+                    botánico.
                   </p>
-                </div>
-                <div className="col-md-6">
-                  {" "}
-                  {/* Ocupa 6 columnas en pantallas grandes */}
-                  <div className="row">
-                    {/* Utiliza la variable imageMartinCardenas para establecer la ruta de la imagen */}
-                    <img
-                      src={imageMartinCardenas}
-                      className="card-img-top rounded"
-                      alt="Imagen Martin Cardenas"
-                    />
-                  </div>
                 </div>
               </div>
             </div>

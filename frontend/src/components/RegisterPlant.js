@@ -1,3 +1,4 @@
+// Importa la clase de estilo
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../css/ImageSection.css";
@@ -10,18 +11,9 @@ const endpoint = "http://127.0.0.1:8000/api";
 function RegisterPlant() {
   const [plantData, setPlantData] = useState({
     nombre: "",
-    //scientificName: "",
     descripcion: "",
-    //purpose: "",
-    //howToUse: "",
     imagen: [],
   });
-
-  /*const handleStorePlanta = async () => {
-    e.preventDefault();
-    console.log("Datos de la planta:", plantData);
-    await axios.post(`${endpoint}/plantas`, plantData);
-  }*/
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -35,30 +27,24 @@ function RegisterPlant() {
     const files = e.target.files;
     setPlantData({
       ...plantData,
-      images: files,
+      imagen: files,
     });
   };
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Realiza la lógica de registro aquí, por ejemplo, envía los datos al servidor
-    console.log("Datos de la planta:", plantData);
-
 
     try {
       const formData = new FormData();
       formData.append("nombre", plantData.nombre);
       formData.append("descripcion", plantData.descripcion);
       formData.append("imagen", plantData.imagen[0]);
-      console.log(formData);
+
       const res = await axios.post(`${endpoint}/insertarPlanta`, formData);
       console.log(res);
-      console.log("hola");
     } catch (err) {
       console.log(err);
     }
-    //await axios.post(`${endpoint}/insertarPlanta`, plantData);
-
   };
 
   const estiloFondo = {
@@ -78,13 +64,15 @@ function RegisterPlant() {
       <Navbar />
       <div className="container">
         <div className="row justify-content-center align-items-center vh-100">
-          <div className="col-md-6">
-            <div className="card text-center">
+          <div className="col-md-8"> {/* Cambia col-md-6 a col-md-8 */}
+            <div className="card">
               <div className="card-body">
-                <h5 className="card-titulo">Registrar una Planta</h5>
+                <h5 className="card-title">Registrar una Planta</h5>
                 <form onSubmit={handleSubmit}>
                   <div className="mb-3">
-                    <label htmlFor="nombre" className="form-label">Nombre de la Planta</label>
+                    <label htmlFor="nombre" className="form-label">
+                      Nombre de la Planta
+                    </label>
                     <input
                       type="text"
                       className="form-control"
@@ -96,7 +84,9 @@ function RegisterPlant() {
                   </div>
 
                   <div className="mb-3">
-                    <label htmlFor="descripcion" className="form-label">Descripción Botánica</label>
+                    <label htmlFor="descripcion" className="form-label">
+                      Descripción Botánica
+                    </label>
                     <textarea
                       className="form-control"
                       id="descripcion"
@@ -106,9 +96,11 @@ function RegisterPlant() {
                       onChange={handleInputChange}
                     ></textarea>
                   </div>
-                  
+
                   <div className="mb-3">
-                    <label htmlFor="imagen" className="form-label">Imágenes</label>
+                    <label htmlFor="imagen" className="form-label">
+                      Imágenes
+                    </label>
                     <input
                       type="file"
                       className="form-control"
@@ -118,8 +110,12 @@ function RegisterPlant() {
                       onChange={handleImageChange}
                     />
                   </div>
-                  <button type="submit" className="btn btn-primary">Registrar</button>
-                  <button type="submit" className="btn btn-primary">Generar QR</button>
+                  <button type="submit" className="btn btn-primary">
+                    Registrar
+                  </button>
+                  <button type="submit" className="btn btn-primary">
+                    Generar QR
+                  </button>
                 </form>
               </div>
             </div>
@@ -131,4 +127,3 @@ function RegisterPlant() {
 }
 
 export default RegisterPlant;
-

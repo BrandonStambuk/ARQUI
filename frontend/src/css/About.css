@@ -13,6 +13,10 @@ body {
     font-size: 4.5em;
 }
 
+.form-label{
+    text-align: right;
+}
+
 .custom-card-text{
     text-align: left;
     text-align: justify;
