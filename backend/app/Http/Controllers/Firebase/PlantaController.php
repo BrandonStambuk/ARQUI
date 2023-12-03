@@ -6,53 +6,74 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Kreait\Firebase\Database;
 use App\Models\Planta;
+use Kreait\Firebase\Storage;
+use Google\Cloud\Storage\StorageClient;
+use App\Models\NombreComun;
 
 
 class PlantaController extends Controller
 {
     protected $plantaModel;
+    protected $firebaseDatabase;
+    protected $firebaseStorage;
 
-    public function __construct(Planta $plantaModel){
+    public function __construct(Planta $plantaModel, Database $firebaseDatabase, StorageClient $firebaseStorage)
+    {
         $this->plantaModel = $plantaModel;
+        $this->firebaseDatabase = $firebaseDatabase;
+        $this->firebaseStorage = $firebaseStorage;
     }
 
     public function store(Request $request)
     {
-
-        $nombre = $request->nombre;
+        $nombreCientifico = $request->nombreCientifico;
+        $nombresComunes = $request->nombresComunes;
         $descripcion = $request->descripcion;
-        $imagen = $request->file('imagen');
-        //$imagenes = $request->file('imagen');
+        $imagenes = $request->file('imagenes');
 
-        $reference = $this->plantaModel->crearPlanta($nombre, $descripcion, $imagen);
-        /*foreach ($imagenes as $imagen) {
-            $reference = $this->plantaModel->crearPlanta($nombre, $descripcion, $imagen);
-        }*/
-    
+        $nombresComunesModels = [];
+
+        foreach ($nombresComunes as $nombreComun) {
+            $nombresComunesModels[] = new NombreComun(['nombre' => $nombreComun]);
+        }
+
+        $this->plantaModel->crearPlanta($nombreCientifico, $nombresComunesModels, $descripcion, $imagenes);
 
         return response()->json([
             'success' => true,
-            'message' => 'Planta creada correctamente',
-            //'key' => $reference->getKey(),
-            //'imagen_path' => $imagenPath,
+            'message' => 'Planta creada correctamente.',
         ]);
     }
 
     public function update(Request $request, $id)
-    {
-        $nombre = $request->nombre;
-        $descripcion = $request->descripcion;
-        $imagen = $request->file('imagen');
+{
+    $nombreCientifico = $request->nombreCientifico;
+    $nombresComunes = $request->nombresComunes;
+    $descripcion = $request->descripcion;
+    $imagenes = $request->file('imagenes');
 
-        $reference = $this->plantaModel->actualizarPlanta($id, $nombre, $descripcion, $imagen);
+    $nombresComunesModels = [];
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Planta actualizada correctamente',
-            //'key' => $reference->getKey(),
-            //'imagen_path' => $imagenPath,
-        ]);
+    foreach ($nombresComunes as $nombreComun) {
+        $nombresComunesModels[] = new NombreComun(['nombre' => $nombreComun]);
     }
+
+    $planta = $this->plantaModel->find($id);
+
+    if (!$planta) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Planta no encontrada.',
+        ], 404);
+    }
+
+    $this->plantaModel->actualizarPlanta($planta, $nombreCientifico, $nombresComunesModels, $descripcion, $imagenes);
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Planta actualizada correctamente.',
+    ]);
+}
 
     public function destroy($id)
     {
@@ -68,12 +89,23 @@ class PlantaController extends Controller
 
     public function index()
     {
-        $plantas = $this->plantaModel->obtenerPlantas();
+        $plantas = $this->plantaModel->listarPlantas();
 
         return response()->json([
             'success' => true,
             'message' => 'Plantas obtenidas correctamente',
-            'plantas' => $plantas,
+            'data' => $plantas,
+        ]);
+    }
+
+    public function show($id)
+    {
+        $planta = $this->plantaModel->mostrarPlanta($id);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Planta obtenida correctamente',
+            'data' => $planta,
         ]);
     }
 }

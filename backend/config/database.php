@@ -95,7 +95,7 @@ return [
         'firebase' => [
             'driver' => 'firebase',
             'url' => env('FIREBASE_DATABASE_URL'),
-            'database' => env('DB_DATABASE', 'forge'),
+            'database' => env('DB_CONNECTION_FIREBASE', 'forge'),
             'prefix' => '',
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
             'storage' => [

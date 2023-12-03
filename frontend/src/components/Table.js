@@ -1,101 +1,83 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import Navbar from "./Navbar";
-import jardin2 from "../images/jardin2.jpg";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
 
-const Table = () => {
-  const plantData = [
-    {
-      id: 1,
-      name: "Planta 1",
-      scientificName: "Scientific Name 1",
-      description: "Description 1",
-      functionality: "Functionality 1",
-      usage: "Usage 1",
-    },
-    {
-      id: 2,
-      name: "Planta 2",
-      scientificName: "Scientific Name 2",
-      description: "Description 2",
-      functionality: "Functionality 2",
-      usage: "Usage 2",
-    },
-    // Add more plant data as needed
-  ];
+const PlantList = () => {
+  const [plantas, setPlantas] = useState([]);
 
-  const estiloFondo = {
-    backgroundImage: `url(${jardin2})`,
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    height: "200vh",
+  useEffect(() => {
+    // Función para cargar la lista de plantas al montar el componente
+    const cargarPlantas = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/api/obtenerPlantas');
+        setPlantas(response.data.data);
+        console.log('Plantas cargadas:', response.data);
+      } catch (error) {
+        console.error('Error al cargar las plantas:', error);
+      }
+      
+    };
+
+    cargarPlantas();
+  }, []);
+
+  const handleEditar = (id) => {
+    // Lógica para editar una planta, puedes redirigir a una página de edición o mostrar un modal, etc.
+    console.log('Editar planta con ID:', id);
+    // Ejemplo de redirección a una página de edición
+
   };
 
-  const contenedorPrincipal = {
-    padding: 0,
-    margin: 0,
+  const handleEliminar = async (id) => {
+    // Lógica para eliminar una planta
+    try {
+      await axios.delete(`http://127.0.0.1:8000/api/eliminarPlanta/${id}`);
+      // Actualizar la lista de plantas después de eliminar
+      setPlantas((prevPlantas) => prevPlantas.filter((planta) => planta.id !== id));
+    } catch (error) {
+      console.error('Error al eliminar la planta:', error);
+    }
   };
 
-  const handleEdit = (id) => {
-    // Implementar lógica de edición
-    console.log(`Editar planta con ID: ${id}`);
+  const obtenerNombresComunes = (nombresComunes) => {
+    return nombresComunes.map((nombreComun) => nombreComun.nombre).join(', ');
   };
-
-  const handleDelete = (id) => {
-    // Implementar lógica de eliminación
-    console.log(`Eliminar planta con ID: ${id}`);
+  
+  
+  const obtenerImagenes = (imagenes) => {
+    return imagenes.map((imagen, index) => (
+      <img
+        key={index} // Asegúrate de que cada imagen tenga una clave única
+        src={imagen}
+        alt="Imagen de la planta"
+        style={{ maxWidth: '100px', maxHeight: '100px' }} // Establece el tamaño deseado
+      />
+    ));
   };
-
   return (
-    <div style={{ ...contenedorPrincipal, ...estiloFondo }}>
-      <Navbar />
-      <div className="container mt-5">
-        <h2>Tabla de Plantas</h2>
-        <table className="table mt-3">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Nombre</th>
-              <th>Nombre Científico</th>
-              <th>Descripción</th>
-              <th>Funcionalidad</th>
-              <th>Uso</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {plantData.map((plant) => (
-              <tr key={plant.id}>
-                <td>{plant.id}</td>
-                <td>{plant.name}</td>
-                <td>{plant.scientificName}</td>
-                <td>{plant.description}</td>
-                <td>{plant.functionality}</td>
-                <td>{plant.usage}</td>
-                <td>
-                  <button
-                    className="btn btn-warning btn-sm me-2"
-                    onClick={() => handleEdit(plant.id)}
-                  >
-                    Editar
-                  </button>
-                  <button
-                    className="btn btn-danger btn-sm"
-                    onClick={() => handleDelete(plant.id)}
-                  >
-                    Eliminar
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <Link to="/register" className="btn btn-primary">
-          Registrar Nueva Planta
+    <div>
+      <h1>Listado de Plantas</h1>
+      <ul>
+  {Array.isArray(plantas) && plantas.length > 0 ? (
+    plantas.map((planta) => (
+      <li key={planta.id}>
+        <strong>Nombre Científico:</strong> {planta.nombreCientifico} <br />
+        <strong>Nombres Comunes:</strong> {obtenerNombresComunes(planta.nombresComunes)} <br />
+        <strong>Descripción:</strong> {planta.descripcion} <br />
+        <strong>Imágenes:</strong> {obtenerImagenes(planta.imagenes)} <br />
+        <Link to={`/editPlant/${planta.id}`}>
+             Editar
         </Link>
-      </div>
+        <button onClick={() => handleEliminar(planta.id)}>Eliminar</button>
+        <hr />
+      </li>
+    ))
+  ) : (
+    <p>No hay plantas disponibles.</p>
+  )}
+</ul>
     </div>
   );
 };
 
-export default Table;
+export default PlantList;

@@ -8,122 +8,110 @@ import axios from "axios";
 
 const endpoint = "http://127.0.0.1:8000/api";
 
-function RegisterPlant() {
-  const [plantData, setPlantData] = useState({
-    nombre: "",
-    descripcion: "",
-    imagen: [],
-  });
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setPlantData({
-      ...plantData,
-      [name]: value,
-    });
-  };
-
-  const handleImageChange = (e) => {
-    const files = e.target.files;
-    setPlantData({
-      ...plantData,
-      imagen: files,
-    });
-  };
+const RegisterPlant = () => {
+  const [nombreCientifico, setNombreCientifico] = useState('');
+  const [nombresComunes, setNombresComunes] = useState(['']);
+  const [descripcion, setDescripcion] = useState('');
+  const [imagenes, setImagenes] = useState([]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try {
-      const formData = new FormData();
-      formData.append("nombre", plantData.nombre);
-      formData.append("descripcion", plantData.descripcion);
-      formData.append("imagen", plantData.imagen[0]);
+    const formData = new FormData();
+    formData.append('nombreCientifico', nombreCientifico);
 
-      const res = await axios.post(`${endpoint}/insertarPlanta`, formData);
-      console.log(res);
-    } catch (err) {
-      console.log(err);
+    for (const nombreComun of nombresComunes) {
+      formData.append('nombresComunes[]', nombreComun);
+    }
+
+    formData.append('descripcion', descripcion);
+
+    for (const imagen of imagenes) {
+      formData.append('imagenes[]', imagen);
+    }
+
+    try {
+      const response = await axios.post(`${endpoint}/insertarPlanta`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      console.log(response.data);
+    } catch (error) {
+      console.error('Error al enviar la solicitud:', error);
     }
   };
 
-  const estiloFondo = {
-    backgroundImage: `url(${jardin2})`,
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    height: "200vh",
+  const handleImagenesChange = (e) => {
+    setImagenes([...e.target.files]);
   };
 
-  const contenedorPrincipal = {
-    padding: 0,
-    margin: 0,
+  const handleNombreComunChange = (index, value) => {
+    const newNombresComunes = [...nombresComunes];
+    newNombresComunes[index] = value;
+    setNombresComunes(newNombresComunes);
+  };
+
+  const handleAgregarNombreComun = () => {
+    setNombresComunes([...nombresComunes, '']);
+  };
+
+  const handleEliminarNombreComun = (index) => {
+    const newNombresComunes = [...nombresComunes];
+    newNombresComunes.splice(index, 1);
+    setNombresComunes(newNombresComunes);
   };
 
   return (
-    <div style={{ ...contenedorPrincipal, ...estiloFondo }}>
-      <Navbar />
-      <div className="container">
-        <div className="row justify-content-center align-items-center vh-100">
-          <div className="col-md-8"> {/* Cambia col-md-6 a col-md-8 */}
-            <div className="card">
-              <div className="card-body">
-                <h5 className="card-title">Registrar una Planta</h5>
-                <form onSubmit={handleSubmit}>
-                  <div className="mb-3">
-                    <label htmlFor="nombre" className="form-label">
-                      Nombre de la Planta
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="nombre"
-                      name="nombre"
-                      value={plantData.nombre}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-
-                  <div className="mb-3">
-                    <label htmlFor="descripcion" className="form-label">
-                      Descripción Botánica
-                    </label>
-                    <textarea
-                      className="form-control"
-                      id="descripcion"
-                      name="descripcion"
-                      rows="3"
-                      value={plantData.descripcion}
-                      onChange={handleInputChange}
-                    ></textarea>
-                  </div>
-
-                  <div className="mb-3">
-                    <label htmlFor="imagen" className="form-label">
-                      Imágenes
-                    </label>
-                    <input
-                      type="file"
-                      className="form-control"
-                      id="imagen"
-                      name="imagen"
-                      multiple
-                      onChange={handleImageChange}
-                    />
-                  </div>
-                  <button type="submit" className="btn btn-primary">
-                    Registrar
-                  </button>
-                  <button type="submit" className="btn btn-primary">
-                    Generar QR
-                  </button>
-                </form>
-              </div>
-            </div>
+    <form onSubmit={handleSubmit}>
+      <Navbar></Navbar>
+      <label>
+        Nombre Científico:
+        <input type="text" value={nombreCientifico} onChange={(e) => setNombreCientifico(e.target.value)} />
+      </label>
+      <br />
+      <label>
+        Nombres Comunes:
+        {nombresComunes.map((nombreComun, index) => (
+          <div key={index}>
+            <input
+              type="text"
+              value={nombreComun}
+              onChange={(e) => handleNombreComunChange(index, e.target.value)}
+            />
+            <button type="button" onClick={() => handleEliminarNombreComun(index)}>-</button>
           </div>
-        </div>
+        ))}
+        <button type="button" onClick={handleAgregarNombreComun}>+</button>
+      </label>
+      <br />
+      <label>
+        Descripción:
+        <textarea value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />
+      </label>
+      <br />
+      <label>
+        Imágenes:
+        <input type="file" multiple onChange={handleImagenesChange} />
+      </label>
+      <br />
+      {/* Mostrar previsualización de imágenes */}
+      <div>
+      {imagenes.map((imagen, index) => (
+        <img
+          key={index}
+          src={imagen instanceof File ? URL.createObjectURL(imagen) : ''}
+          alt={`Imagen ${index + 1}`}
+          style={{ maxWidth: '100px', maxHeight: '100px', marginRight: '10px' }}
+        />
+      ))}
       </div>
-    </div>
+      <br />
+      <br />
+      <button type="submit">Enviar</button>
+    </form>
   );
-}
+};
 
 export default RegisterPlant;
