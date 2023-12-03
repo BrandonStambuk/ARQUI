@@ -6,14 +6,21 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Kreait\Firebase\Database;
 use App\Models\Planta;
+use Kreait\Firebase\Storage;
+use Google\Cloud\Storage\StorageClient;
 
 
 class PlantaController extends Controller
 {
     protected $plantaModel;
+    protected $firebaseDatabase;
+    protected $firebaseStorage;
 
-    public function __construct(Planta $plantaModel){
+    public function __construct(Planta $plantaModel, Database $firebaseDatabase, StorageClient $firebaseStorage)
+    {
         $this->plantaModel = $plantaModel;
+        $this->firebaseDatabase = $firebaseDatabase;
+        $this->firebaseStorage = $firebaseStorage;
     }
 
     public function store(Request $request)
@@ -21,20 +28,13 @@ class PlantaController extends Controller
 
         $nombre = $request->nombre;
         $descripcion = $request->descripcion;
-        $imagen = $request->file('imagen');
-        //$imagenes = $request->file('imagen');
+        $imagenes = $request->file('imagenes');
 
-        $reference = $this->plantaModel->crearPlanta($nombre, $descripcion, $imagen);
-        /*foreach ($imagenes as $imagen) {
-            $reference = $this->plantaModel->crearPlanta($nombre, $descripcion, $imagen);
-        }*/
-    
+        $this->plantaModel->crearPlanta($nombre, $descripcion, $imagenes);
 
         return response()->json([
             'success' => true,
-            'message' => 'Planta creada correctamente',
-            //'key' => $reference->getKey(),
-            //'imagen_path' => $imagenPath,
+            'message' => 'Planta creada correctamente.',
         ]);
     }
 

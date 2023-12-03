@@ -27,17 +27,24 @@ class Planta extends Model
         $this->storage = $storage;
     }
 
-    public function crearPlanta($nombre, $descripcion, $imagen){
+    public function crearPlanta($nombre, $descripcion, $imagenes)
+    {
         $storage = app('firebase.storage');
         $bucket = $storage->getBucket();
 
-        $nombreImagen = $imagen->getClientOriginalName();
-        $path = 'Images/' . $nombreImagen;
+        $referenciasImagenes = [];
 
-        $bucket->upload(
-            file_get_contents($imagen->getPathName()),
-            ['name' => $path]
-        );
+        foreach ($imagenes as $imagen) {
+            $nombreImagen = $imagen->getClientOriginalName();
+            $path = 'Images/' . $nombreImagen;
+
+            $bucket->upload(
+                file_get_contents($imagen->getPathName()),
+                ['name' => $path]
+            );
+
+            $referenciasImagenes[] = $path;
+        }
 
         // Guardar los datos de la planta en Firestore
         $database = app('firebase.database');
@@ -46,12 +53,11 @@ class Planta extends Model
         $reference->push([
             'nombre' => $nombre,
             'descripcion' => $descripcion,
-            'imagen' => $path, // Guardamos la ruta de la imagen en Firestore
+            'imagenes' => $referenciasImagenes, // Guardamos las rutas de las imágenes en Firestore
         ]);
 
         return $reference;
     }
-
 
     public function actualizarPlanta($id, $nombre, $descripcion, $imagen) {
         $storage = app('firebase.storage');
