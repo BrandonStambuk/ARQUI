@@ -21,7 +21,7 @@ const Types = () => {
       <Link to={link} style={{ textDecoration: 'none', color: 'inherit' }}>
         <div className="card">
           <img src={jardin2} className="card-img-top" alt={title} />
-          <div className="card-bod">
+          <div className="card-body">
             <h5 className="card-titulo">{title}</h5>
             <p className="card-text">{description}</p>
           </div>

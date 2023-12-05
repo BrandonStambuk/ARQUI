@@ -23,7 +23,26 @@ class PlantaController extends Controller
         $this->firebaseDatabase = $firebaseDatabase;
         $this->firebaseStorage = $firebaseStorage;
     }
+   public function edit($id)
+    {
+        // Paso 1: Obtener los datos de la planta existente
+        $planta = $this->plantaModel->find($id);
 
+        if (!$planta) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Planta no encontrada.',
+            ], 404);
+        }
+
+        // Paso 2: Pasar los datos al formulario de edición (puedes hacerlo en el frontend)
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Datos de la planta obtenidos correctamente.',
+            'data' => $planta,
+        ]);
+    }
     public function store(Request $request)
     {
         $nombreCientifico = $request->nombreCientifico;
@@ -45,35 +64,34 @@ class PlantaController extends Controller
         ]);
     }
 
-    public function update(Request $request, $id)
-{
-    $nombreCientifico = $request->nombreCientifico;
-    $nombresComunes = $request->nombresComunes;
-    $descripcion = $request->descripcion;
-    $imagenes = $request->file('imagenes');
-
-    $nombresComunesModels = [];
-
-    foreach ($nombresComunes as $nombreComun) {
-        $nombresComunesModels[] = new NombreComun(['nombre' => $nombreComun]);
-    }
-
-    $planta = $this->plantaModel->find($id);
-
-    if (!$planta) {
+    public function update(Request $request, $id){
+        $nombreCientifico = $request->nombreCientifico;
+        $nombresComunes = $request->nombresComunes;
+        $descripcion = $request->descripcion;
+        $imagenes = $request->file('imagenes');
+    
+        $nombresComunesModels = [];
+    
+        foreach ($nombresComunes as $nombreComun) {
+            $nombresComunesModels[] = new NombreComun(['nombre' => $nombreComun]);
+        }
+    
+        $planta = $this->plantaModel->find($id);
+    
+        if (!$planta) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Planta no encontrada.',
+            ], 404);
+        }
+    
+        $this->plantaModel->actualizarPlanta($planta, $nombreCientifico, $nombresComunesModels, $descripcion, $imagenes);
+    
         return response()->json([
-            'success' => false,
-            'message' => 'Planta no encontrada.',
-        ], 404);
+            'success' => true,
+            'message' => 'Planta actualizada correctamente.',
+        ]);
     }
-
-    $this->plantaModel->actualizarPlanta($planta, $nombreCientifico, $nombresComunesModels, $descripcion, $imagenes);
-
-    return response()->json([
-        'success' => true,
-        'message' => 'Planta actualizada correctamente.',
-    ]);
-}
 
     public function destroy($id)
     {

@@ -23,6 +23,9 @@ function Navbar() {
             <li className="nav-item">
               <Link className="nav-link" to="/about">Sobre Martin Cardenas</Link>
             </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/types">Tipos de plantas</Link>
+            </li>
           </ul>
         </div>
       </div>

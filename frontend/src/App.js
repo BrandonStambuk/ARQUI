@@ -9,7 +9,9 @@ import RegisterPlant from './components/RegisterPlant';
 import Table from './components/Table';
 import Types from './components/Types';
 import EditPlant from './components/EditPlant';
+import CarouselComponent from './components/Carrousel';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import CarrouselPlant from './components/CarrouselPlant';
 
 function App() {
   return (
@@ -24,6 +26,7 @@ function App() {
           <Route path="/table" element={<Table/>} />
           <Route path="/types" element={<Types/>} />
           <Route path="/editPlant/:id" element={<EditPlant />} />
+          <Route path="/CarrouselPlant/" element={<CarrouselPlant />} />
         </Routes>
       </BrowserRouter>
     </div>
