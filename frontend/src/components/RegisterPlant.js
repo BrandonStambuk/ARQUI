@@ -136,6 +136,18 @@ const RegisterPlant = () => {
                 />
               </div>
               <div className="mb-3">
+                <label htmlFor="tipoPlanta" className="form-label">
+                  Tipo de Planta:
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="tipoPlanta"
+                  value={tipoPlanta}
+                  onChange={handleTipoPlantaChange}
+                />
+              </div>
+              <div className="mb-3">
                 <label htmlFor="imagenes" className="form-label">
                   Imágenes:
                 </label>

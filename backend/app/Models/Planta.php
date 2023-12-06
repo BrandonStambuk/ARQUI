@@ -33,36 +33,37 @@ class Planta extends Model
         return $this->hasMany(NombreComun::class);
     }
 
-    public function crearPlanta($nombreCientifico, $nombresComunes, $descripcion, $imagenes)
+    public function crearPlanta($nombreCientifico, $nombresComunes, $descripcion, $tipoPlanta, $imagenes)
     {
         $storage = app('firebase.storage');
         $bucket = $storage->getBucket();
-
+    
         $referenciasImagenes = [];
-
+    
         foreach ($imagenes as $imagen) {
             $nombreImagen = $imagen->getClientOriginalName();
             $path = 'Images/' . $nombreImagen;
-
+    
             $bucket->upload(
                 file_get_contents($imagen->getPathName()),
                 ['name' => $path]
             );
-
+    
             $referenciasImagenes[] = $path;
         }
-
+    
         // Guardar los datos de la planta en Firestore
         $database = app('firebase.database');
         $reference = $database->getReference($this->tablename);
-
+    
         $plantaReference = $reference->push([
             'nombreCientifico' => $nombreCientifico,
             'nombresComunes' => $nombresComunes,
             'descripcion' => $descripcion,
+            'tipoPlanta' => $tipoPlanta, // Nuevo campo "tipo de planta"
             'imagenes' => $referenciasImagenes, // Guardamos las rutas de las imágenes en Firestore
         ]);
-
+    
         return $plantaReference;
     }
 
