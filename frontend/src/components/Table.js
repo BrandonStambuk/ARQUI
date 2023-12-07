@@ -29,9 +29,17 @@ const PlantList = () => {
   };
 
   const obtenerNombresComunes = (nombresComunes) => {
-    return nombresComunes.map((nombreComun) => nombreComun.nombre).join(', ');
-  };
+    // Si nombresComunes es un array de objetos, extraer los nombres
+    const nombres = nombresComunes.map((nombreComun) => {
+      // Verificar si es un objeto o ya es un string
+      if (typeof nombreComun === 'object') {
+        return nombreComun.nombre;
+      }
+      return nombreComun;
+    });
 
+    return nombres.join(', ');
+  };
 
   return (
     <div>

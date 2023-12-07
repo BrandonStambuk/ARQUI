@@ -42,22 +42,26 @@ const EditPlant = () => {
       try {
         const response = await axios.get(`${endpoint}/obtenerPlanta/${id}`);
         setPlantData(response.data.data);
-
+    
         const { nombreCientifico, nombresComunes, descripcion, tipoPlanta, imagenes: imageNames } =
           response.data.data;
-
+    
         setNombreCientifico(nombreCientifico);
-        setNombresComunes(nombresComunes);
+    
+        // Asegúrate de que nombresComunes sea un array de strings
+        const formattedNombresComunes = nombresComunes.map((nombreComun) => nombreComun.nombre || nombreComun);
+        setNombresComunes(formattedNombresComunes);
+    
         setDescripcion(descripcion);
         setTipoPlanta(tipoPlanta);
+    
         const imageUrls = await Promise.all(
           imageNames.map(async (imageName) => {
             const imageUrl = await getDownloadURL(ref(storage, `${imageName}`));
-
             return imageUrl;
           })
         );
-
+    
         setImagenes(imageUrls);
         console.log("Datos de la planta cargados:", response.data.data);
       } catch (error) {
@@ -116,7 +120,7 @@ const EditPlant = () => {
   };
 
   const handleAgregarNombreComun = () => {
-    setNombresComunes([...nombresComunes, { nombre: "" }]);
+    setNombresComunes([...nombresComunes, ""]);
   };
 
   const handleEliminarNombreComun = (index) => {
@@ -163,7 +167,7 @@ const EditPlant = () => {
                     <div key={index} className="d-flex">
                       <Form.Control
                         type="text"
-                        value={nombreComun.nombre}
+                        value={nombreComun}
                         onChange={(e) =>
                           handleNombreComunChange(index, e.target.value)
                         }
