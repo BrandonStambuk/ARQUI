@@ -5,7 +5,28 @@ import { useParams } from "react-router-dom";
 import { Card, Form, Button, Col, Row } from "react-bootstrap";
 import Navbar from "./Navbar";
 import fondoImagen from "../images/jardin3.jpg";
+import { initializeApp } from "firebase/app";
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
+
 const endpoint = "http://127.0.0.1:8000/api";
+
+// Configura tu proyecto Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyDzcgdq3uCqURkpfXTlptrtOfCSmbkivt0",
+  authDomain: "jardinbotanico-28aed.firebaseapp.com",
+  databaseURL: "https://jardinbotanico-28aed-default-rtdb.firebaseio.com",
+  projectId: "jardinbotanico-28aed",
+  storageBucket: "jardinbotanico-28aed.appspot.com",
+  messagingSenderId: "1030784464482",
+  appId: "1:1030784464482:web:b249b4d99201a2f2f6833b",
+  measurementId: "G-NQJLT0HG64"
+};
+
+// Inicializa Firebase
+const app = initializeApp(firebaseConfig);
+
+// Obtén una referencia al storage de Firebase
+const storage = getStorage(app);
 
 const EditPlant = () => {
   const { id } = useParams();
@@ -22,13 +43,22 @@ const EditPlant = () => {
         const response = await axios.get(`${endpoint}/obtenerPlanta/${id}`);
         setPlantData(response.data.data);
 
-        const { nombreCientifico, nombresComunes, descripcion,tipoPlanta ,imagenes } =
+        const { nombreCientifico, nombresComunes, descripcion, tipoPlanta, imagenes: imageNames } =
           response.data.data;
+
         setNombreCientifico(nombreCientifico);
         setNombresComunes(nombresComunes);
         setDescripcion(descripcion);
         setTipoPlanta(tipoPlanta);
-        setImagenes(imagenes);
+        const imageUrls = await Promise.all(
+          imageNames.map(async (imageName) => {
+            const imageUrl = await getDownloadURL(ref(storage, `${imageName}`));
+
+            return imageUrl;
+          })
+        );
+
+        setImagenes(imageUrls);
         console.log("Datos de la planta cargados:", response.data.data);
       } catch (error) {
         console.error("Error al obtener los datos de la planta:", error);
@@ -49,7 +79,7 @@ const EditPlant = () => {
     }
 
     formData.append("descripcion", descripcion);
-    
+
     for (const imagen of imagenes) {
       formData.append("imagenes[]", imagen);
     }
@@ -99,7 +129,13 @@ const EditPlant = () => {
   }
 
   return (
-    <div style={{ backgroundImage: `url(${fondoImagen})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+    <div
+      style={{
+        backgroundImage: `url(${fondoImagen})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
       <Navbar></Navbar>
       <Card>
         <Card.Body>
@@ -185,9 +221,9 @@ const EditPlant = () => {
                     <img
                       key={index}
                       src={
-                        imagen instanceof File
-                          ? URL.createObjectURL(imagen)
-                          : ""
+                        typeof imagen === "string"
+                          ? imagen
+                          : URL.createObjectURL(imagen)
                       }
                       alt={`Imagen ${index + 1}`}
                       style={{
