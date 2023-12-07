@@ -23,7 +23,7 @@ class PlantaController extends Controller
         $this->firebaseDatabase = $firebaseDatabase;
         $this->firebaseStorage = $firebaseStorage;
     }
-   public function edit($id)
+    public function edit($id)
     {
         // Paso 1: Obtener los datos de la planta existente
         $planta = $this->plantaModel->find($id);
@@ -36,7 +36,6 @@ class PlantaController extends Controller
         }
 
         // Paso 2: Pasar los datos al formulario de edición (puedes hacerlo en el frontend)
-
         return response()->json([
             'success' => true,
             'message' => 'Datos de la planta obtenidos correctamente.',
@@ -78,20 +77,16 @@ class PlantaController extends Controller
             $nombresComunesModels[] = new NombreComun(['nombre' => $nombreComun]);
         }
     
-        $planta = $this->plantaModel->find($id);
-    
-        if (!$planta) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Planta no encontrada.',
-            ], 404);
-        }
-    
-        $this->plantaModel->actualizarPlanta($planta, $nombreCientifico, $nombresComunesModels, $descripcion, $imagenes);
-    
+        $this->plantaModel->actualizarPlanta($id, $nombreCientifico, $nombresComunesModels, $descripcion, $imagenes);
+
         return response()->json([
             'success' => true,
-            'message' => 'Planta actualizada correctamente.',
+            'message' => 'f nomas',
+            'nombreCientifico' => $nombreCientifico,
+            'nombresComunes' => $nombresComunes,
+            'descripcion' => $descripcion,
+            'imagenes' => $imagenes,
+            //'planta' => $planta,
         ]);
     }
 

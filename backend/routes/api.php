@@ -20,7 +20,7 @@ use App\Http\Controllers\Firebase\PlantaController;
 });*/
 
 Route::post('insertarPlanta', [PlantaController::class, 'store']);
-Route::put('actualizarPlanta/{id}', [PlantaController::class, 'update']);
+Route::post('actualizarPlanta/{id}', [PlantaController::class, 'update']);
 Route::delete('eliminarPlanta/{id}', [PlantaController::class, 'destroy']);
 Route::get('obtenerPlantas', [PlantaController::class, 'index']);
 Route::get('obtenerPlanta/{id}', [PlantaController::class, 'show']);

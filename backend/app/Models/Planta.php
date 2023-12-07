@@ -67,46 +67,62 @@ class Planta extends Model
         return $plantaReference;
     }
 
-    public function actualizarPlanta($planta, $nombreCientifico, $nombresComunes, $descripcion, $imagenes)
-{
-    // Eliminar imágenes antiguas del storage
-    $this->eliminarImagenesStorage($planta->imagenes);
+    public function actualizarPlanta($id, $nombreCientifico, $nombresComunes, $descripcion, $imagenes)
+    {
+        // Obtener la referencia de la planta en Firestore
+        $reference = $this->database->getReference($this->tablename . '/' . $id);
+        $planta = $reference->getValue();
 
-    $storage = app('firebase.storage');
-    $bucket = $storage->getBucket();
+        // Obtener el nombre del bucket del objeto StorageClient
+        $storage = app('firebase.storage');
+        $bucketName = $storage->getBucket();
 
-    $referenciasImagenes = [];
+        // Eliminar las imágenes antiguas en el almacenamiento
+        foreach ($planta['imagenes'] as $imagen) {
+            $object = $bucketName->object($imagen);
 
-    foreach ($imagenes as $imagen) {
-        $nombreImagen = $imagen->getClientOriginalName();
-        $path = 'Images/' . $nombreImagen;
+            if ($object->exists()) {
+                $object->delete();
+            }
+        }
 
-        $bucket->upload(
-            file_get_contents($imagen->getPathName()),
-            ['name' => $path]
-        );
+        // Subir y obtener las referencias de las nuevas imágenes
+        if($imagenes != null){
+            $referenciasImagenes = [];
+            foreach ($imagenes as $imagen) {
+                $nombreImagen = $imagen->getClientOriginalName();
+                $path = 'Images/' . $nombreImagen;
 
-        $referenciasImagenes[] = $path;
+                //$bucket = $this->storage->bucket($bucketName->name());
+                $bucketName->upload(
+                    file_get_contents($imagen->getPathName()),
+                    ['name' => $path]
+                );
+
+                $referenciasImagenes[] = $path;
+            }
+
+            // Actualizar los datos de la planta en Firestore
+            $reference->update([
+                'nombreCientifico' => $nombreCientifico,
+                'nombresComunes' => $nombresComunes,
+                'descripcion' => $descripcion,
+                'imagenes' => $referenciasImagenes,
+            ]);
+        }else{
+            // Actualizar los datos de la planta en Firestore
+            $reference->update([
+                'nombreCientifico' => $nombreCientifico,
+                'nombresComunes' => $nombresComunes,
+                'descripcion' => $descripcion,
+            ]);
+        }
+
+        // Devolver la referencia de la planta actualizada
+        return $reference;
     }
 
-    // Actualizar los datos de la planta en Firestore
-    $database = app('firebase.database');
-    $reference = $database->getReference('plantas/' . $planta->getKey());
 
-    $reference->update([
-        'nombreCientifico' => $nombreCientifico,
-        'nombresComunes' => $nombresComunes,
-        'descripcion' => $descripcion,
-        'imagenes' => $referenciasImagenes,
-    ]);
-
-    // Actualizar relaciones Eloquent
-    $planta->nombreCientifico = $nombreCientifico;
-    $planta->descripcion = $descripcion;
-    $planta->imagenes = $referenciasImagenes;
-    $planta->nombresComunes()->delete(); // Eliminar los nombres comunes antiguos
-    $planta->nombresComunes()->saveMany($nombresComunes); // Guardar los nuevos nombres comunes
-}
 
     public function eliminarPlanta($id)
     {

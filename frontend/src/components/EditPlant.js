@@ -55,7 +55,7 @@ const EditPlant = () => {
     }
 
     try {
-      const response = await axios.put(
+      const response = await axios.post(
         `${endpoint}/actualizarPlanta/${id}`,
         formData,
         {
@@ -67,6 +67,7 @@ const EditPlant = () => {
 
       console.log(response.data);
     } catch (error) {
+      console.log(formData);
       console.error(
         "Error al enviar la solicitud de edición:",
         error.response.data
@@ -80,7 +81,7 @@ const EditPlant = () => {
 
   const handleNombreComunChange = (index, value) => {
     const newNombresComunes = [...nombresComunes];
-    newNombresComunes[index] = { nombre: value }; // Guardamos los nombres como objetos
+    newNombresComunes[index] = value; 
     setNombresComunes(newNombresComunes);
   };
 
