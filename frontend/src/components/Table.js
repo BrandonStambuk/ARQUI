@@ -41,6 +41,11 @@ const PlantList = () => {
     return nombres.join(', ');
   };
 
+  const convertirHtmlATexto = (htmlString) => {
+    const doc = new DOMParser().parseFromString(htmlString, 'text/html');
+    return doc.body.textContent || "";
+  };
+
   return (
     <div>
       <div className="card bg-transparent">
@@ -64,7 +69,7 @@ const PlantList = () => {
                     <td>{planta.id}</td>
                     <td>{planta.nombreCientifico}</td>
                     <td>{obtenerNombresComunes(planta.nombresComunes)}</td>
-                    <td>{planta.descripcion}</td>
+                    <td>{convertirHtmlATexto(planta.descripcion)}</td>
                     <td>{planta.tipoPlanta}</td>
                     <td>
                       <Link to={`/editPlant/${planta.id}`} className="btn btn-primary mr-2">

@@ -7,7 +7,7 @@ import Navbar from "./Navbar";
 import fondoImagen from "../images/jardin3.jpg";
 import { initializeApp } from "firebase/app";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
-
+import { Editor } from "@tinymce/tinymce-react"; // Importa TinyMCE
 const endpoint = "http://127.0.0.1:8000/api";
 
 // Configura tu proyecto Firebase
@@ -196,10 +196,11 @@ const EditPlant = () => {
               <Col md={12}>
                 <Form.Group controlId="formDescripcion">
                   <Form.Label>Descripción:</Form.Label>
-                  <Form.Control
-                    as="textarea"
+                  {/* Integra TinyMCE aquí */}
+                  <Editor
+                    apiKey="TU_API_KEY_DE_TINYMCE"
                     value={descripcion}
-                    onChange={(e) => setDescripcion(e.target.value)}
+                    onEditorChange={(content) => setDescripcion(content)}
                   />
                 </Form.Group>
               </Col>

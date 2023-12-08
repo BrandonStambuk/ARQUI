@@ -78,16 +78,17 @@ class Planta extends Model
         $bucketName = $storage->getBucket();
 
         // Eliminar las imágenes antiguas en el almacenamiento
-        foreach ($planta['imagenes'] as $imagen) {
-            $object = $bucketName->object($imagen);
 
-            if ($object->exists()) {
-                $object->delete();
-            }
-        }
 
         // Subir y obtener las referencias de las nuevas imágenes
         if($imagenes != null){
+            foreach ($planta['imagenes'] as $imagen) {
+                $object = $bucketName->object($imagen);
+    
+                if ($object->exists()) {
+                    $object->delete();
+                }
+            }
             $referenciasImagenes = [];
             foreach ($imagenes as $imagen) {
                 $nombreImagen = $imagen->getClientOriginalName();
