@@ -198,7 +198,7 @@ const EditPlant = () => {
                   <Form.Label>Descripción:</Form.Label>
                   {/* Integra TinyMCE aquí */}
                   <Editor
-                    apiKey="TU_API_KEY_DE_TINYMCE"
+                    apiKey="hza3mgcarp7rukdgkhnua1airq2522z41s0btsk5gqq64632"
                     value={descripcion}
                     onEditorChange={(content) => setDescripcion(content)}
                   />
