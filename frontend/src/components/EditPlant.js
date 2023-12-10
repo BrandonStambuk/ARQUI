@@ -19,7 +19,7 @@ const firebaseConfig = {
   storageBucket: "jardinbotanico-28aed.appspot.com",
   messagingSenderId: "1030784464482",
   appId: "1:1030784464482:web:b249b4d99201a2f2f6833b",
-  measurementId: "G-NQJLT0HG64"
+  measurementId: "G-NQJLT0HG64",
 };
 
 // Inicializa Firebase
@@ -42,26 +42,33 @@ const EditPlant = () => {
       try {
         const response = await axios.get(`${endpoint}/obtenerPlanta/${id}`);
         setPlantData(response.data.data);
-    
-        const { nombreCientifico, nombresComunes, descripcion, tipoPlanta, imagenes: imageNames } =
-          response.data.data;
-    
+
+        const {
+          nombreCientifico,
+          nombresComunes,
+          descripcion,
+          tipoPlanta,
+          imagenes: imageNames,
+        } = response.data.data;
+
         setNombreCientifico(nombreCientifico);
-    
+
         // Asegúrate de que nombresComunes sea un array de strings
-        const formattedNombresComunes = nombresComunes.map((nombreComun) => nombreComun.nombre || nombreComun);
+        const formattedNombresComunes = nombresComunes.map(
+          (nombreComun) => nombreComun.nombre || nombreComun
+        );
         setNombresComunes(formattedNombresComunes);
-    
+
         setDescripcion(descripcion);
         setTipoPlanta(tipoPlanta);
-    
+
         const imageUrls = await Promise.all(
           imageNames.map(async (imageName) => {
             const imageUrl = await getDownloadURL(ref(storage, `${imageName}`));
             return imageUrl;
           })
         );
-    
+
         setImagenes(imageUrls);
         console.log("Datos de la planta cargados:", response.data.data);
       } catch (error) {
@@ -74,20 +81,21 @@ const EditPlant = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     const formData = new FormData();
     formData.append("nombreCientifico", nombreCientifico);
-
+  
     for (const nombreComun of nombresComunes) {
       formData.append("nombresComunes[]", nombreComun);
     }
-
+  
     formData.append("descripcion", descripcion);
-
+    formData.append("tipoPlanta", tipoPlanta);
+    
     for (const imagen of imagenes) {
       formData.append("imagenes[]", imagen);
     }
-
+  
     try {
       const response = await axios.post(
         `${endpoint}/actualizarPlanta/${id}`,
@@ -98,7 +106,7 @@ const EditPlant = () => {
           },
         }
       );
-
+  
       console.log(response.data);
     } catch (error) {
       console.log(formData);
@@ -115,14 +123,17 @@ const EditPlant = () => {
 
   const handleNombreComunChange = (index, value) => {
     const newNombresComunes = [...nombresComunes];
-    newNombresComunes[index] = value; 
+    newNombresComunes[index] = value;
     setNombresComunes(newNombresComunes);
   };
 
   const handleAgregarNombreComun = () => {
     setNombresComunes([...nombresComunes, ""]);
   };
-
+  
+  const handleTipoPlantaChange = (e) => {
+    setTipoPlanta(e.target.value);
+  };
   const handleEliminarNombreComun = (index) => {
     const newNombresComunes = [...nombresComunes];
     newNombresComunes.splice(index, 1);
@@ -196,11 +207,23 @@ const EditPlant = () => {
               <Col md={12}>
                 <Form.Group controlId="formDescripcion">
                   <Form.Label>Descripción:</Form.Label>
-                  {/* Integra TinyMCE aquí */}
                   <Editor
                     apiKey="hza3mgcarp7rukdgkhnua1airq2522z41s0btsk5gqq64632"
                     value={descripcion}
                     onEditorChange={(content) => setDescripcion(content)}
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+
+            <Row>
+              <Col md={12}>
+                <Form.Group controlId="formTipoPlanta">
+                  <Form.Label>Tipo de planta:</Form.Label>
+                  <Form.Control
+                    type="text"
+                    value={tipoPlanta}
+                    onChange={handleTipoPlantaChange}
                   />
                 </Form.Group>
               </Col>

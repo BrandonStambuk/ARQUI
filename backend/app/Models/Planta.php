@@ -67,7 +67,7 @@ class Planta extends Model
         return $plantaReference;
     }
 
-    public function actualizarPlanta($id, $nombreCientifico, $nombresComunes, $descripcion, $imagenes)
+    public function actualizarPlanta($id, $nombreCientifico, $nombresComunes, $descripcion,$tipoPlanta ,$imagenes)
     {
         // Obtener la referencia de la planta en Firestore
         $reference = $this->database->getReference($this->tablename . '/' . $id);
@@ -108,6 +108,7 @@ class Planta extends Model
                 'nombreCientifico' => $nombreCientifico,
                 'nombresComunes' => $nombresComunes,
                 'descripcion' => $descripcion,
+                'tipoPlanta'=>$tipoPlanta,
                 'imagenes' => $referenciasImagenes,
             ]);
         }else{
@@ -116,6 +117,8 @@ class Planta extends Model
                 'nombreCientifico' => $nombreCientifico,
                 'nombresComunes' => $nombresComunes,
                 'descripcion' => $descripcion,
+                'tipoPlanta'=>$tipoPlanta,
+                'imagenes' => $referenciasImagenes,
             ]);
         }
 
@@ -147,6 +150,7 @@ class Planta extends Model
                 'nombreCientifico' => $planta['nombreCientifico'],
                 'nombresComunes' => $planta['nombresComunes'],
                 'descripcion' => $planta['descripcion'],
+                'tipoPlanta' =>$planta['tipoPlanta'],
                 'imagenes' => $planta['imagenes'],
             ];
         }
@@ -168,6 +172,7 @@ class Planta extends Model
             'nombreCientifico' => $planta['nombreCientifico'],
             'nombresComunes' => $planta['nombresComunes'],
             'descripcion' => $planta['descripcion'],
+            'tipoPlanta'=>$planta['tipoPlanta'],
             'imagenes' => $planta['imagenes'],
         ];
 

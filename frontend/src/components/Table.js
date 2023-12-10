@@ -54,7 +54,6 @@ const PlantList = () => {
           <table className="table">
             <thead>
               <tr>
-                <th>ID</th>
                 <th>Nombre Científico</th>
                 <th>Nombres Comunes</th>
                 <th>Descripción</th>
@@ -66,7 +65,6 @@ const PlantList = () => {
               {Array.isArray(plantas) && plantas.length > 0 ? (
                 plantas.map((planta) => (
                   <tr key={planta.id}>
-                    <td>{planta.id}</td>
                     <td>{planta.nombreCientifico}</td>
                     <td>{obtenerNombresComunes(planta.nombresComunes)}</td>
                     <td>{convertirHtmlATexto(planta.descripcion)}</td>
