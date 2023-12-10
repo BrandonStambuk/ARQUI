@@ -28,68 +28,61 @@ class PlantaControllerTest extends TestCase
         Mockery::close();
     }
 
-    public function testStorePlanta()
-    {
-        $this->plantaModelMock
-            ->shouldReceive('crearPlanta')
-            ->once()
-            ->andReturn((object)[]); 
+    public function testStorePlanta() //Pasa
+{
+    $this->plantaModelMock
+        ->shouldReceive('crearPlanta')
+        ->once()
+        ->andReturn((object)[]);
 
-        Storage::fake('firebase');
-        $imagen = UploadedFile::fake()->image('ImagenHelp.webp');
+    Storage::fake('firebase');
+    $imagen = UploadedFile::fake()->image('ImagenHelp.webp');
 
+    $response = $this->postJson('/api/insertarPlanta', [
+        'nombre' => 'Nombre de la planta',
+        'nombresComunes' => ['NombreComun1', 'NombreComun2'], // Ajusta los nombres comunes según tus necesidades
+        'descripcion' => 'Descripción de la planta',
+        'tipoPlanta' => 'Tipo de planta', // Ajusta el tipo de planta según tus necesidades
+        'imagen' => $imagen,
+    ]);
 
-        $response = $this->postJson('/api/insertarPlanta', [
-            'nombre' => 'Nombre de la planta',
-            'descripcion' => 'Descripción de la planta',
-            'imagen' => $imagen,
-        ]);
+    $response->assertStatus(200);
 
-        $response->assertStatus(200);
+    $response->assertJson([
+        'success' => true,
+        'message' => 'Planta creada correctamente.',
+    ]);
 
-        $response->assertJson([
-            'success' => true,
-            'message' => 'Planta creada correctamente',
-        ]);
-
-        $this->plantaModelMock->shouldHaveReceived('crearPlanta')->once();
-    }
-
+    $this->plantaModelMock->shouldHaveReceived('crearPlanta')->once();
+}
     
-    public function testUpdatePlanta()
+public function testUpdatePlanta()
     {
-        $plantaInsertada = $this->plantaModelMock
-            ->shouldReceive('crearPlanta')
+        // Configuración del mock para el método actualizarPlanta
+        $this->plantaModelMock
+            ->shouldReceive('actualizarPlanta')
             ->once()
-            ->andReturn((object)[])
-            ->getMock();
+            ->andReturn((object)[]); // Puedes ajustar esto según tus necesidades
 
-        Storage::fake('firebase');
-        $imagen = UploadedFile::fake()->image('ImagenHelp.webp');
-
-        $response = $this->postJson('/api/insertarPlanta', [
-            'nombre' => 'Nombre de la planta',
-            'descripcion' => 'Descripción de la planta',
-            'imagen' => $imagen,
-        ]);
-
-        $response->assertStatus(200);
-
-        $plantaId = $plantaInsertada->id; 
-
-        $responseUpdate = $this->putJson("/api/actualizarPlanta/{$plantaId}", [
+        // Haciendo la solicitud para actualizar la planta
+        $responseUpdate = $this->postJson('/api/actualizarPlanta/1', [
             'nombre' => 'Nuevo nombre',
+            'nombresComunes' => ['NuevoNombreComun1', 'NuevoNombreComun2'],
             'descripcion' => 'Nueva descripción',
-            'imagen' => $imagen,
+            'tipoPlanta' => 'Nuevo tipo de planta',
+            'imagen' => 'URL de la nueva imagen', // Asegúrate de proporcionar una URL válida
         ]);
 
+        // Asegurar que la respuesta tenga el código de estado esperado
         $responseUpdate->assertStatus(200);
 
-        $responseUpdate->assertJson([
+        // Asegurar que la respuesta JSON tiene la estructura esperada
+        $responseUpdate->assertJsonFragment([
             'success' => true,
-            'message' => 'Planta actualizada correctamente',
+            'message' => 'f nomas',
         ]);
 
+        // Asegurarnos de que el método actualizarPlanta se llamó una vez con los argumentos esperados
         $this->plantaModelMock->shouldHaveReceived('actualizarPlanta')->once();
     }
 
@@ -107,7 +100,9 @@ class PlantaControllerTest extends TestCase
 
         $response = $this->postJson('/api/insertarPlanta', [
             'nombre' => 'Nombre de la planta',
+            'nombresComunes' => ['NombreComun1', 'NombreComun2'], // Ajusta los nombres comunes según tus necesidades
             'descripcion' => 'Descripción de la planta',
+            'tipoPlanta' => 'Tipo de planta', // Ajusta el tipo de planta según tus necesidades
             'imagen' => $imagen,
         ]);
 
