@@ -83,7 +83,11 @@ class Planta extends Model
         $bucketName = $storage->getBucket();
 
         // Eliminar las imágenes antiguas en el almacenamiento
+<<<<<<< HEAD
         
+=======
+
+>>>>>>> 4ac5984d6c12650c18cb5f774a7235272e7f2dd0
 
         // Subir y obtener las referencias de las nuevas imágenes
         if($imagenes != null){

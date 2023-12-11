@@ -49,15 +49,10 @@ class PlantaController extends Controller
         $descripcion = $request->descripcion;
         $tipoPlanta = $request->tipoPlanta; // Nuevo campo agregado
         $imagenes = $request->file('imagenes');
+    
+        // No necesitas un array de objetos NombreComun
         
-    
-        $nombresComunesModels = [];
-    
-        foreach ($nombresComunes as $nombreComun) {
-            $nombresComunesModels[] = new NombreComun(['nombre' => $nombreComun]);
-        }
-    
-        $this->plantaModel->crearPlanta($nombreCientifico, $nombresComunesModels, $descripcion,$tipoPlanta,$imagenes);
+        $this->plantaModel->crearPlanta($nombreCientifico, $nombresComunes, $descripcion, $tipoPlanta, $imagenes);
     
         return response()->json([
             'success' => true,

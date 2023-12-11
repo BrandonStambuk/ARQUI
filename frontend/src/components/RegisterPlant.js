@@ -3,7 +3,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../css/ImageSection.css";
 import Navbar from "./Navbar";
 import axios from "axios";
-import fondoImagen from "../images/jardin3.jpg";
+import fondoImagen from "../images/jardin3.jpg"; // Asegúrate de proporcionar la ruta correcta
+import { Editor } from "@tinymce/tinymce-react";
 const endpoint = "http://127.0.0.1:8000/api";
 
 const RegisterPlant = () => {
@@ -61,6 +62,16 @@ const RegisterPlant = () => {
   const handleImagenesChange = (e) => {
     setImagenes([...e.target.files]);
   };
+
+  const inputStyle = {
+    width: "50%",
+  };
+
+  const handleTinyMCEChange = (content, editor) => {
+    // Actualiza el estado de la descripción con el contenido del editor TinyMCE
+    setDescripcion(content);
+  };
+
 
   const handleNombreComunChange = (index, value) => {
     const newNombresComunes = [...nombresComunes];
@@ -136,16 +147,28 @@ const RegisterPlant = () => {
                 </button>
               </div>
               <div className="mb-3">
-                <label htmlFor="descripcion" className="form-label">
-                  Descripción:
-                </label>
-                <textarea
-                  className="form-control"
-                  id="descripcion"
-                  value={descripcion}
-                  onChange={(e) => setDescripcion(e.target.value)}
-                />
-              </div>
+      <label htmlFor="descripcion" className="form-label">
+        Descripción:
+      </label>
+      {/* Integra TinyMCE como un componente de editor de texto enriquecido */}
+      <Editor
+        apiKey="hza3mgcarp7rukdgkhnua1airq2522z41s0btsk5gqq64632" // Reemplaza con tu clave de API de TinyMCE
+        value={descripcion}
+        init={{
+          height: 300,
+          menubar: false,
+          plugins: [
+            "advlist autolink lists link image charmap print preview anchor",
+            "searchreplace visualblocks code fullscreen",
+            "insertdatetime media table paste code help wordcount",
+          ],
+          toolbar: `undo redo | formatselect | bold italic backcolor | \
+          alignleft aligncenter alignright alignjustify | \
+          bullist numlist outdent indent | removeformat | help`,
+        }}
+        onEditorChange={handleTinyMCEChange}
+      />
+    </div>
               <div className="mb-3">
                 <label htmlFor="tipoPlanta" className="form-label">
                   Tipo de Planta:

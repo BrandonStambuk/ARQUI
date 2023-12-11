@@ -7,7 +7,7 @@ import Navbar from "./Navbar";
 import fondoImagen from "../images/jardin3.jpg";
 import { initializeApp } from "firebase/app";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
-
+import { Editor } from "@tinymce/tinymce-react"; // Importa TinyMCE
 const endpoint = "http://127.0.0.1:8000/api";
 
 // Configura tu proyecto Firebase
@@ -42,22 +42,26 @@ const EditPlant = () => {
       try {
         const response = await axios.get(`${endpoint}/obtenerPlanta/${id}`);
         setPlantData(response.data.data);
-
+    
         const { nombreCientifico, nombresComunes, descripcion, tipoPlanta, imagenes: imageNames } =
           response.data.data;
-
+    
         setNombreCientifico(nombreCientifico);
-        setNombresComunes(nombresComunes);
+    
+        // Asegúrate de que nombresComunes sea un array de strings
+        const formattedNombresComunes = nombresComunes.map((nombreComun) => nombreComun.nombre || nombreComun);
+        setNombresComunes(formattedNombresComunes);
+    
         setDescripcion(descripcion);
         setTipoPlanta(tipoPlanta);
+    
         const imageUrls = await Promise.all(
           imageNames.map(async (imageName) => {
             const imageUrl = await getDownloadURL(ref(storage, `${imageName}`));
-
             return imageUrl;
           })
         );
-
+    
         setImagenes(imageUrls);
         console.log("Datos de la planta cargados:", response.data.data);
       } catch (error) {
@@ -163,7 +167,7 @@ const EditPlant = () => {
                     <div key={index} className="d-flex">
                       <Form.Control
                         type="text"
-                        value={nombreComun.nombre}
+                        value={nombreComun}
                         onChange={(e) =>
                           handleNombreComunChange(index, e.target.value)
                         }
@@ -192,10 +196,11 @@ const EditPlant = () => {
               <Col md={12}>
                 <Form.Group controlId="formDescripcion">
                   <Form.Label>Descripción:</Form.Label>
-                  <Form.Control
-                    as="textarea"
+                  {/* Integra TinyMCE aquí */}
+                  <Editor
+                    apiKey="hza3mgcarp7rukdgkhnua1airq2522z41s0btsk5gqq64632"
                     value={descripcion}
-                    onChange={(e) => setDescripcion(e.target.value)}
+                    onEditorChange={(content) => setDescripcion(content)}
                   />
                 </Form.Group>
               </Col>
