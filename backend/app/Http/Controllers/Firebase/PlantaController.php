@@ -66,6 +66,7 @@ class PlantaController extends Controller
         $nombresComunes = $request->nombresComunes;
         $descripcion = $request->descripcion;
         $tipoPlanta = $request->tipoPlanta;
+        $tipoPlanta = $request->tipoPlanta;
         $imagenes = $request->file('imagenes');
     
         $nombresComunesModels = [];
@@ -82,6 +83,7 @@ class PlantaController extends Controller
             'nombreCientifico' => $nombreCientifico,
             'nombresComunes' => $nombresComunes,
             'descripcion' => $descripcion,
+            'tipoPlanta'=>$tipoPlanta,
             'imagenes' => $imagenes,
             //'planta' => $planta,
         ]);
@@ -114,7 +116,7 @@ class PlantaController extends Controller
     public function show($id)
     {
         $planta = $this->plantaModel->mostrarPlanta($id);
-
+        
         return response()->json([
             'success' => true,
             'message' => 'Planta obtenida correctamente',

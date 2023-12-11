@@ -20,7 +20,7 @@ const firebaseConfig = {
   storageBucket: "jardinbotanico-28aed.appspot.com",
   messagingSenderId: "1030784464482",
   appId: "1:1030784464482:web:b249b4d99201a2f2f6833b",
-  measurementId: "G-NQJLT0HG64"
+  measurementId: "G-NQJLT0HG64",
 };
 
 // Inicializa Firebase
@@ -52,7 +52,9 @@ const EditPlant = () => {
         setNombreCientifico(nombreCientifico);
 
         // Asegúrate de que nombresComunes sea un array de strings
-        const formattedNombresComunes = nombresComunes.map((nombreComun) => nombreComun.nombre || nombreComun);
+        const formattedNombresComunes = nombresComunes.map(
+          (nombreComun) => nombreComun.nombre || nombreComun
+        );
         setNombresComunes(formattedNombresComunes);
 
         setDescripcion(descripcion);
@@ -82,6 +84,7 @@ const EditPlant = () => {
           })
         );
 
+
         setImagenes(imageUrls);
         console.log("Datos de la planta cargados:", response.data.data);
         console.log("Tipoplanta" , tipoPlanta);
@@ -95,14 +98,14 @@ const EditPlant = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     const formData = new FormData();
     formData.append("nombreCientifico", nombreCientifico);
-
+  
     for (const nombreComun of nombresComunes) {
       formData.append("nombresComunes[]", nombreComun);
     }
-
+  
     formData.append("descripcion", descripcion);
 
     formData.append("tipoPlanta", tipoPlanta);
@@ -110,7 +113,7 @@ const EditPlant = () => {
     for (const imagen of imagenes) {
       formData.append("imagenes[]", imagen);
     }
-
+  
     try {
       const response = await axios.post(
         `${endpoint}/actualizarPlanta/${id}`,
@@ -121,7 +124,7 @@ const EditPlant = () => {
           },
         }
       );
-
+  
       console.log(response.data);
     } catch (error) {
       console.log(formData);
@@ -138,14 +141,17 @@ const EditPlant = () => {
 
   const handleNombreComunChange = (index, value) => {
     const newNombresComunes = [...nombresComunes];
-    newNombresComunes[index] = value; 
+    newNombresComunes[index] = value;
     setNombresComunes(newNombresComunes);
   };
 
   const handleAgregarNombreComun = () => {
     setNombresComunes([...nombresComunes, ""]);
   };
-
+  
+  const handleTipoPlantaChange = (e) => {
+    setTipoPlanta(e.target.value);
+  };
   const handleEliminarNombreComun = (index) => {
     const newNombresComunes = [...nombresComunes];
     newNombresComunes.splice(index, 1);
