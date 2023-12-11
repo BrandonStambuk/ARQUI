@@ -113,7 +113,7 @@ class PlantaController extends Controller
     public function show($id)
     {
         $planta = $this->plantaModel->mostrarPlanta($id);
-
+        
         return response()->json([
             'success' => true,
             'message' => 'Planta obtenida correctamente',

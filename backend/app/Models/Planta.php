@@ -67,64 +67,61 @@ class Planta extends Model
         return $plantaReference;
     }
 
-    public function actualizarPlanta($id, $nombreCientifico, $nombresComunes, $descripcion,$tipoPlanta ,$imagenes)
-    {
-        // Obtener la referencia de la planta en Firestore
-        $reference = $this->database->getReference($this->tablename . '/' . $id);
-        $planta = $reference->getValue();
+    public function actualizarPlanta($id, $nombreCientifico, $nombresComunes, $descripcion, $tipoPlanta, $imagenes)
+{
+    // Obtener la referencia de la planta en Firestore
+    $reference = $this->database->getReference($this->tablename . '/' . $id);
+    $planta = $reference->getValue();
 
-        // Obtener el nombre del bucket del objeto StorageClient
-        $storage = app('firebase.storage');
-        $bucketName = $storage->getBucket();
+    // Obtener el nombre del bucket del objeto StorageClient
+    $storage = app('firebase.storage');
+    $bucketName = $storage->getBucket();
 
-        // Eliminar las imágenes antiguas en el almacenamiento
+    // Inicializar $referenciasImagenes con un array vacío
+    $referenciasImagenes = [];
 
-
-        // Subir y obtener las referencias de las nuevas imágenes
-        if($imagenes != null){
+    // Eliminar las imágenes antiguas en el almacenamiento
+    if ($imagenes != null) {
+        // Verificar si la variable $planta['imagenes'] está definida
+        if (isset($planta['imagenes'])) {
             foreach ($planta['imagenes'] as $imagen) {
                 $object = $bucketName->object($imagen);
-    
+
                 if ($object->exists()) {
                     $object->delete();
                 }
             }
-            $referenciasImagenes = [];
-            foreach ($imagenes as $imagen) {
-                $nombreImagen = $imagen->getClientOriginalName();
-                $path = 'Images/' . $nombreImagen;
-
-                //$bucket = $this->storage->bucket($bucketName->name());
-                $bucketName->upload(
-                    file_get_contents($imagen->getPathName()),
-                    ['name' => $path]
-                );
-
-                $referenciasImagenes[] = $path;
-            }
-
-            // Actualizar los datos de la planta en Firestore
-            $reference->update([
-                'nombreCientifico' => $nombreCientifico,
-                'nombresComunes' => $nombresComunes,
-                'descripcion' => $descripcion,
-                'tipoPlanta'=>$tipoPlanta,
-                'imagenes' => $referenciasImagenes,
-            ]);
-        }else{
-            // Actualizar los datos de la planta en Firestore
-            $reference->update([
-                'nombreCientifico' => $nombreCientifico,
-                'nombresComunes' => $nombresComunes,
-                'descripcion' => $descripcion,
-                'tipoPlanta'=>$tipoPlanta,
-                'imagenes' => $referenciasImagenes,
-            ]);
         }
 
-        // Devolver la referencia de la planta actualizada
-        return $reference;
+        // Subir y obtener las referencias de las nuevas imágenes
+        foreach ($imagenes as $imagen) {
+            $nombreImagen = $imagen->getClientOriginalName();
+            $path = 'Images/' . $nombreImagen;
+
+            $bucketName->upload(
+                file_get_contents($imagen->getPathName()),
+                ['name' => $path]
+            );
+
+            $referenciasImagenes[] = $path;
+        }
+    } else {
+        // Si no hay imágenes nuevas, mantener las referencias existentes
+        $referenciasImagenes = $planta['imagenes'] ?? [];
     }
+
+    // Actualizar los datos de la planta en Firestore
+    $reference->update([
+        'nombreCientifico' => $nombreCientifico,
+        'nombresComunes' => $nombresComunes,
+        'descripcion' => $descripcion,
+        'tipoPlanta' => $tipoPlanta,
+        'imagenes' => $referenciasImagenes,
+    ]);
+
+    // Devolver la referencia de la planta actualizada
+    return $reference;
+}
 
 
 

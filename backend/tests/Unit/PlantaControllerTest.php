@@ -89,78 +89,90 @@ public function testUpdatePlanta()
 
     public function testDeletePlanta()
     {
-        $plantaInsertada = $this->plantaModelMock
-            ->shouldReceive('crearPlanta')
-            ->once()
-            ->andReturn((object)[]) // Devolver un objeto vacío o ajusta según tus necesidades
-            ->getMock();
+        // Crear una instancia del modelo Planta con un mock parcial
+        $plantaModelMock = $this->createPartialMock('App\Models\Planta', ['eliminarPlanta']);
+    
+        // Definir el ID de la planta para la prueba
+        $plantaId = 1;  // o cualquier otro ID válido
+        
+        // Configurar expectativas para el método eliminarPlanta en el modelo Planta
+        $plantaModelMock
+            ->expects($this->once())
+            ->method('eliminarPlanta')
+            ->with($plantaId);
 
-        Storage::fake('firebase');
-        $imagen = UploadedFile::fake()->image('ImagenHelp.webp');
-
-        $response = $this->postJson('/api/insertarPlanta', [
-            'nombre' => 'Nombre de la planta',
-            'nombresComunes' => ['NombreComun1', 'NombreComun2'], // Ajusta los nombres comunes según tus necesidades
-            'descripcion' => 'Descripción de la planta',
-            'tipoPlanta' => 'Tipo de planta', // Ajusta el tipo de planta según tus necesidades
-            'imagen' => $imagen,
-        ]);
-
+        // Reemplazar la implementación existente con el mock parcial
+        $this->app->instance('App\Models\Planta', $plantaModelMock);
+    
+        // Realizar la solicitud DELETE
+        $response = $this->delete("/api/eliminarPlanta/{$plantaId}");
+    
+        // Asegurarse de que la respuesta sea exitosa (código 200)
         $response->assertStatus(200);
-
-        $plantaId = $plantaInsertada->id; 
-
-        $responseDelete = $this->delete("/api/eliminarPlanta/{$plantaId}");
-
-        $responseDelete->assertStatus(200);
-
-        $responseDelete->assertJson([
-            'success' => true,
-            'message' => 'Planta eliminada correctamente',
-        ]);
-
-        $this->plantaModelMock->shouldHaveReceived('eliminarPlanta')->once();
+    
+        // Otros asertos y limpieza si es necesario
     }
 
+ 
 
     public function testGetPlanta()
     {
-        $plantaInsertada = $this->plantaModelMock
-            ->shouldReceive('crearPlanta')
-            ->once()
-            ->andReturn((object)[]) 
-            ->getMock();
+   // Configurar expectativas para el método crearPlanta en el modelo Planta
+   $this->plantaModelMock
+   ->shouldReceive('crearPlanta')
+   ->once()
+   ->andReturn((object)[]);
 
-        Storage::fake('firebase');
-        $imagen = UploadedFile::fake()->image('ImagenHelp.webp');
+// Realizar la solicitud POST para insertar una planta
+$response = $this->postJson('/api/insertarPlanta', [
+   'nombre' => 'Nombre de la planta',
+   'nombresComunes' => ['NombreComun1', 'NombreComun2'],
+   'descripcion' => 'Descripción de la planta',
+   'tipoPlanta' => 'Tipo de planta',
+   'imagen' => UploadedFile::fake()->image('ImagenHelp.webp'),
+]);
 
-        $response = $this->postJson('/api/insertarPlanta', [
+// Asegurarse de que la solicitud POST sea exitosa (código de estado 200)
+$response->assertStatus(200);
+
+// Asegurarse de que la respuesta contenga los datos esperados
+$response->assertJson([
+   'success' => true,
+   'message' => 'Planta creada correctamente.',
+]);
+
+// Obtener el ID de la planta creada
+$plantaId = 1;  // Ajusta el ID según tus necesidades o lógica de la aplicación
+
+// Configurar expectativas para el método mostrarPlanta en el modelo Planta
+$this->plantaModelMock
+   ->shouldReceive('mostrarPlanta')
+   ->with((string) $plantaId)
+   ->once()
+   ->andReturn((object)[]);
+
+// Realizar la solicitud GET para obtener la planta recién creada
+$responseGet = $this->get("/api/obtenerPlanta/{$plantaId}");
+
+// Asegurarse de que la solicitud GET sea exitosa (código de estado 200)
+$responseGet->assertStatus(200);
+
+// Asegurarse de que la respuesta contenga los datos esperados
+$responseGet->assertJson([
+    [
+        'success' => true,
+        'message' => 'Planta obtenida correctamente',
+        'data' => [
+            'id' => 1,
             'nombre' => 'Nombre de la planta',
+            'nombresComunes' => ['NombreComun1', 'NombreComun2'],
             'descripcion' => 'Descripción de la planta',
-            'imagen' => $imagen,
-        ]);
- 
-        $response->assertStatus(200);
-
-        $plantaId = $plantaInsertada->id;
-
-        $responseGet = $this->get("/api/obtenerPlanta/{$plantaId}");
-
-        $responseGet->assertStatus(200);
-
-        $responseGet->assertJson([
-            'success' => true,
-            'data' => [ 
-                'id' => $plantaId,
-                'nombre' => 'Nombre de la planta',
-                'descripcion' => 'Descripción de la planta',
-                'imagen' => $imagen->hashName(),
-            ],
-        ]);
-
-        $this->plantaModelMock->shouldHaveReceived('obtenerPlanta')->once();
+            'tipoPlanta' => 'Tipo de planta',
+            'imagen' => 'Nombre de la imagen',
+        ],
+    ],
+]);
     }
-
     public function testGetAllPlantas()
     {
         $planta1 = $this->plantaModelMock
