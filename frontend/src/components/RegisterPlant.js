@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../css/ImageSection.css";
 import Navbar from "./Navbar";
 import axios from "axios";
-import fondoImagen from "../images/jardin3.jpg"; // Asegúrate de proporcionar la ruta correcta
+import fondoImagen from "../images/jardin3.jpg";
 const endpoint = "http://127.0.0.1:8000/api";
 
 const RegisterPlant = () => {
@@ -12,6 +12,21 @@ const RegisterPlant = () => {
   const [descripcion, setDescripcion] = useState("");
   const [imagenes, setImagenes] = useState([]);
   const [tipoPlanta, setTipoPlanta] = useState("");
+  const [tiposPlanta, setTiposPlanta] = useState([]);
+
+  useEffect(() => {
+    // Obtener los tipos de planta disponibles
+    const obtenerTiposPlanta = async () => {
+      try {
+        const response = await axios.get(`${endpoint}/obtenerTiposPlantas`);
+        setTiposPlanta(response.data.data);
+      } catch (error) {
+        console.error("Error al obtener tipos de planta:", error);
+      }
+    };
+
+    obtenerTiposPlanta();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -45,10 +60,6 @@ const RegisterPlant = () => {
 
   const handleImagenesChange = (e) => {
     setImagenes([...e.target.files]);
-  };
-
-  const inputStyle = {
-    width: "50%",
   };
 
   const handleNombreComunChange = (index, value) => {
@@ -139,13 +150,19 @@ const RegisterPlant = () => {
                 <label htmlFor="tipoPlanta" className="form-label">
                   Tipo de Planta:
                 </label>
-                <input
-                  type="text"
+                <select
                   className="form-control"
                   id="tipoPlanta"
                   value={tipoPlanta}
                   onChange={handleTipoPlantaChange}
-                />
+                >
+                  <option value="">Seleccionar Tipo de Planta</option>
+                  {tiposPlanta.map((tipo) => (
+                    <option key={tipo.id} value={tipo.id}>
+                      {tipo.nombre}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div className="mb-3">
                 <label htmlFor="imagenes" className="form-label">

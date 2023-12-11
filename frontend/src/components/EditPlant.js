@@ -116,7 +116,7 @@ const EditPlant = () => {
   };
 
   const handleAgregarNombreComun = () => {
-    setNombresComunes([...nombresComunes, { nombre: "" }]);
+    setNombresComunes([...nombresComunes, ""]);
   };
 
   const handleEliminarNombreComun = (index) => {

@@ -33,7 +33,12 @@ class Planta extends Model
         return $this->hasMany(NombreComun::class);
     }
 
-    public function crearPlanta($nombreCientifico, $nombresComunes, $descripcion, $tipoPlanta, $imagenes)
+    public function tipoPlanta()
+    {
+        return $this->belongsTo(TipoPlanta::class);
+    }
+
+    public function crearPlanta($nombreCientifico, $nombresComunes, $descripcion, $tipoPlantaId, $imagenes)
     {
         $storage = app('firebase.storage');
         $bucket = $storage->getBucket();
@@ -60,7 +65,7 @@ class Planta extends Model
             'nombreCientifico' => $nombreCientifico,
             'nombresComunes' => $nombresComunes,
             'descripcion' => $descripcion,
-            'tipoPlanta' => $tipoPlanta, // Nuevo campo "tipo de planta"
+            'tipo_planta_id' => $tipoPlantaId,
             'imagenes' => $referenciasImagenes, // Guardamos las rutas de las imágenes en Firestore
         ]);
     
@@ -78,16 +83,17 @@ class Planta extends Model
         $bucketName = $storage->getBucket();
 
         // Eliminar las imágenes antiguas en el almacenamiento
-        foreach ($planta['imagenes'] as $imagen) {
-            $object = $bucketName->object($imagen);
-
-            if ($object->exists()) {
-                $object->delete();
-            }
-        }
+        
 
         // Subir y obtener las referencias de las nuevas imágenes
         if($imagenes != null){
+            foreach ($planta['imagenes'] as $imagen) {
+                $object = $bucketName->object($imagen);
+    
+                if ($object->exists()) {
+                    $object->delete();
+                }
+            }
             $referenciasImagenes = [];
             foreach ($imagenes as $imagen) {
                 $nombreImagen = $imagen->getClientOriginalName();
@@ -116,6 +122,7 @@ class Planta extends Model
                 'nombresComunes' => $nombresComunes,
                 'descripcion' => $descripcion,
             ]);
+
         }
 
         // Devolver la referencia de la planta actualizada
