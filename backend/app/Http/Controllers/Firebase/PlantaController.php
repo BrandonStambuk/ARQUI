@@ -9,6 +9,7 @@ use App\Models\Planta;
 use Kreait\Firebase\Storage;
 use Google\Cloud\Storage\StorageClient;
 use App\Models\NombreComun;
+use App\Models\TipoPlanta;
 
 
 class PlantaController extends Controller
@@ -64,6 +65,7 @@ class PlantaController extends Controller
         $nombreCientifico = $request->nombreCientifico;
         $nombresComunes = $request->nombresComunes;
         $descripcion = $request->descripcion;
+        $tipoPlanta = $request->tipoPlanta;
         $imagenes = $request->file('imagenes');
     
         $nombresComunesModels = [];
@@ -72,7 +74,7 @@ class PlantaController extends Controller
             $nombresComunesModels[] = new NombreComun(['nombre' => $nombreComun]);
         }
     
-        $this->plantaModel->actualizarPlanta($id, $nombreCientifico, $nombresComunesModels, $descripcion, $imagenes);
+        $this->plantaModel->actualizarPlanta($id, $nombreCientifico, $nombresComunesModels, $descripcion, $tipoPlanta, $imagenes);
 
         return response()->json([
             'success' => true,
@@ -99,6 +101,7 @@ class PlantaController extends Controller
 
     public function index()
     {
+        
         $plantas = $this->plantaModel->listarPlantas();
 
         return response()->json([

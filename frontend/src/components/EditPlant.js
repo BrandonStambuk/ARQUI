@@ -7,7 +7,8 @@ import Navbar from "./Navbar";
 import fondoImagen from "../images/jardin3.jpg";
 import { initializeApp } from "firebase/app";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
-import { Editor } from "@tinymce/tinymce-react"; // Importa TinyMCE
+import { Editor } from "@tinymce/tinymce-react";
+
 const endpoint = "http://127.0.0.1:8000/api";
 
 // Configura tu proyecto Firebase
@@ -34,43 +35,63 @@ const EditPlant = () => {
   const [nombresComunes, setNombresComunes] = useState([]);
   const [descripcion, setDescripcion] = useState("");
   const [tipoPlanta, setTipoPlanta] = useState("");
+  const [tiposPlanta, setTiposPlanta] = useState([]);
   const [imagenes, setImagenes] = useState([]);
   const [plantData, setPlantData] = useState(null);
+  const [tiposPlantaLoaded, setTiposPlantaLoaded] = useState(false);
 
   useEffect(() => {
     const fetchPlantData = async () => {
       try {
         const response = await axios.get(`${endpoint}/obtenerPlanta/${id}`);
         setPlantData(response.data.data);
-    
+
         const { nombreCientifico, nombresComunes, descripcion, tipoPlanta, imagenes: imageNames } =
           response.data.data;
-    
+
         setNombreCientifico(nombreCientifico);
-    
+
         // Asegúrate de que nombresComunes sea un array de strings
         const formattedNombresComunes = nombresComunes.map((nombreComun) => nombreComun.nombre || nombreComun);
         setNombresComunes(formattedNombresComunes);
-    
+
         setDescripcion(descripcion);
         setTipoPlanta(tipoPlanta);
-    
+
+        console.log("TipoPlanta" , tipoPlanta);
+        console.log("TiposPlanta" , tiposPlanta);
+        console.log("Descripcion", descripcion);
+
+        // Obtener tipos de planta solo si aún no se han cargado
+        if (!tiposPlantaLoaded) {
+          const tiposResponse = await axios.get(`${endpoint}/obtenerTiposPlantas`);
+          setTiposPlanta(tiposResponse.data.data);
+          setTiposPlantaLoaded(true);
+        }
+
+        // Encuentra el tipo de planta seleccionado y configúralo
+        const tipoPlantaSeleccionado = tiposPlanta.find(tipo => tipo.id === tipoPlanta);
+        setTipoPlanta(tipoPlantaSeleccionado ? tipoPlantaSeleccionado.id : "");
+        console.log("Tipo de planta seleccionado:", tipoPlantaSeleccionado);
+        console.log("Tipo Planta F: ", tipoPlanta);
+
         const imageUrls = await Promise.all(
           imageNames.map(async (imageName) => {
             const imageUrl = await getDownloadURL(ref(storage, `${imageName}`));
             return imageUrl;
           })
         );
-    
+
         setImagenes(imageUrls);
         console.log("Datos de la planta cargados:", response.data.data);
+        console.log("Tipoplanta" , tipoPlanta);
       } catch (error) {
         console.error("Error al obtener los datos de la planta:", error);
       }
     };
 
     fetchPlantData();
-  }, [id]);
+  }, [id, tiposPlanta, tiposPlantaLoaded]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -83,6 +104,8 @@ const EditPlant = () => {
     }
 
     formData.append("descripcion", descripcion);
+
+    formData.append("tipoPlanta", tipoPlanta);
 
     for (const imagen of imagenes) {
       formData.append("imagenes[]", imagen);
@@ -196,12 +219,31 @@ const EditPlant = () => {
               <Col md={12}>
                 <Form.Group controlId="formDescripcion">
                   <Form.Label>Descripción:</Form.Label>
-                  {/* Integra TinyMCE aquí */}
                   <Editor
                     apiKey="hza3mgcarp7rukdgkhnua1airq2522z41s0btsk5gqq64632"
                     value={descripcion}
                     onEditorChange={(content) => setDescripcion(content)}
                   />
+                </Form.Group>
+              </Col>
+            </Row>
+
+            <Row>
+              <Col md={12}>
+                <Form.Group controlId="formTipoPlanta">
+                  <Form.Label>Tipo de Planta:</Form.Label>
+                  <Form.Control
+                    as="select"
+                    value={tipoPlanta}
+                    onChange={(e) => setTipoPlanta(e.target.value)}
+                  >
+                    <option value="">Seleccionar Tipo de Planta</option>
+                    {tiposPlanta.map((tipo) => (
+                      <option key={tipo.id} value={tipo.id}>
+                        {tipo.nombre}
+                      </option>
+                    ))}
+                  </Form.Control>
                 </Form.Group>
               </Col>
             </Row>

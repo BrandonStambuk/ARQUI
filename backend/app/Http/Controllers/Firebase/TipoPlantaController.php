@@ -90,6 +90,7 @@ class TipoPlantaController extends Controller
 
     public function plantas($id)
     {
+        
         $plantas = $this->tipoPlantaModel->obtenerPlantasPorTipoPlanta($id);
 
         return response()->json([

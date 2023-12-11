@@ -70,7 +70,7 @@ const PlantList = () => {
                     <td>{planta.nombreCientifico}</td>
                     <td>{obtenerNombresComunes(planta.nombresComunes)}</td>
                     <td>{convertirHtmlATexto(planta.descripcion)}</td>
-                    <td>{planta.tipoPlanta}</td>
+                    <td>{planta.tipo_planta_id}</td>
                     <td>
                       <Link to={`/editPlant/${planta.id}`} className="btn btn-primary mr-2">
                         Editar
