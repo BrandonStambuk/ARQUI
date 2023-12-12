@@ -121,11 +121,27 @@ class TipoPlanta extends Model
         return ['success' => true, 'message' => 'Tipo de planta y plantas asociadas eliminadas'];
     }
 
-    public function obtenerPlantasPorTipoPlanta($id)
+    public function obtenerPlantasPorTipoPlanta($tipoPlantaId)
     {
-        $plantas = $this->database->getReference($this->tablename)->getChild($id)->getChild('plantas')->getValue();
-        return $plantas;
+        $plantas = $this->database->getReference('plantas')->getValue();
+
+        $plantasArray = [];
+
+        foreach ($plantas as $plantaId => $planta) {
+            if ($planta['tipo_planta_id'] == $tipoPlantaId) {
+                $plantasArray[] = [
+                    'id' => $plantaId,
+                    'nombreCientifico' => $planta['nombreCientifico'],
+                    'nombresComunes' => $planta['nombresComunes'],
+                    'descripcion' => $planta['descripcion'],
+                    'imagenes' => $planta['imagenes'],
+                ];
+            }
+        }
+
+        return $plantasArray;
     }
+
 
     public function obtenerPlantasPorTipoPlantaPaginado($id, $pagina, $cantidad)
     {
