@@ -1,56 +1,46 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { Card } from "react-bootstrap";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa"; // Importa los íconos
+
 import Navbar from "./Navbar";
 import fondoImagen from "../images/jardin3.jpg";
 
 const Plants = () => {
-  const plantas = [
-    {
-      id: 1,
-      nombre: "Planta 1",
-      descripcion: "Descripción de la Planta 1",
-      imagen: "url_de_la_imagen_1.jpg",
-    },
-    {
-      id: 2,
-      nombre: "Planta 2",
-      descripcion: "Descripción de la Planta 2",
-      imagen: "url_de_la_imagen_2.jpg",
-    },
-    {
-      id: 3,
-      nombre: "Planta 3",
-      descripcion: "Descripción de la Planta 3",
-      imagen: "url_de_la_imagen_3.jpg",
-    },
-    {
-      id: 4,
-      nombre: "Planta 4",
-      descripcion: "Descripción de la Planta 4",
-      imagen: "url_de_la_imagen_4.jpg",
-    },
-    {
-        id: 4,
-        nombre: "Planta 4",
-        descripcion: "Descripción de la Planta 4",
-        imagen: "url_de_la_imagen_4.jpg",
-      },
-      {
-        id: 4,
-        nombre: "Planta 4",
-        descripcion: "Descripción de la Planta 4",
-        imagen: "url_de_la_imagen_4.jpg",
+  const params = useParams();
+  const { tipoId } = params;
+  const [plantas, setPlantas] = useState([]);
+
+  useEffect(() => {
+    const obtenerPlantasPorTipo = async () => {
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/api/obtenerTipoPlanta/${tipoId}`);
+        const data = await response.json();
+        if (Array.isArray(data.data) && data.data.length > 0) {
+          setPlantas(data.data);
+        } else {
+          console.error("La respuesta de la API no contiene un array válido de plantas.");
+        }
+      } catch (error) {
+        console.error("Error al obtener plantas:", error);
       }
-  ];
+    };
+
+    obtenerPlantasPorTipo();
+  }, [tipoId]);
 
   const settings = {
     infinite: true,
-    slidesToShow: 4,
+    slidesToShow: plantas.length > 0 ? Math.min(4, plantas.length) : 1,
     slidesToScroll: 1,
+    nextArrow: <NextArrow />,
+    prevArrow: <PrevArrow />,
   };
+
+  console.log("ID del Tipo de Planta:", tipoId); // Imprime el ID
 
   return (
     <div
@@ -58,27 +48,55 @@ const Plants = () => {
         backgroundImage: `url(${fondoImagen})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
-        minHeight: "100vh",  // Añadido para ocupar al menos la altura completa de la pantalla
+        minHeight: "100vh",
       }}
     >
       <Navbar />
       <div className="container mt-5">
-        <Slider {...settings}>
-          {plantas.map((planta) => (
-            <div key={planta.id}>
-              <Card style={{ width: "18rem" }}>
-                <Card.Img variant="top" src={planta.imagen} />
-                <Card.Body>
-                  <Card.Title>{planta.nombre}</Card.Title>
-                  <Card.Text>{planta.descripcion}</Card.Text>
-                   
-                </Card.Body>
-              </Card>
-            </div>
-          ))}
-        </Slider>
+        <h2>Plantas Asociadas al Tipo {tipoId}</h2>
+        {plantas.length > 0 ? (
+          <Slider {...settings}>
+            {plantas.map((planta) => (
+              <div key={planta.id}>
+                <Card style={{ width: "18rem" }}>
+                  <Card.Img variant="top" src={planta.imagen} />
+                  <Card.Body>
+                    <Card.Title>{planta.nombreCientifico}</Card.Title>
+                    
+                  </Card.Body>
+                </Card>
+              </div>
+            ))}
+          </Slider>
+        ) : (
+          <p>No hay plantas asociadas a este tipo.</p>
+        )}
       </div>
     </div>
+  );
+};
+
+// Componente para la flecha de siguiente
+const NextArrow = (props) => {
+  const { className, style, onClick } = props;
+  return (
+    <FaChevronRight
+      className={className}
+      style={{ ...style, display: "block", color: "white", fontSize: "24px", cursor: "pointer" }}
+      onClick={onClick}
+    />
+  );
+};
+
+// Componente para la flecha anterior
+const PrevArrow = (props) => {
+  const { className, style, onClick } = props;
+  return (
+    <FaChevronLeft
+      className={className}
+      style={{ ...style, display: "block", color: "white", fontSize: "24px", cursor: "pointer" }}
+      onClick={onClick}
+    />
   );
 };
 

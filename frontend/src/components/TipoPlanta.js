@@ -132,7 +132,7 @@ const TiposPlanta = () => {
           onChange={handleNombreTipoPlantaChange}
         />
         <label htmlFor="imagenTipoPlanta">Imagen:</label>
-        <input type="file" id="imagenTipoPlanta" value = {imagenTipoPlanta} onChange={handleImagenTipoPlantaChange} />
+        <input type="file" id="imagenTipoPlanta"onChange={handleImagenTipoPlantaChange} />
         {tipoPlantaEditando ? (
           <button onClick={editarTipoPlanta}>Guardar Cambios</button>
         ) : (

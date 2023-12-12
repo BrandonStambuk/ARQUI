@@ -97,7 +97,7 @@ const App = () => {
           <Route path="/register" element={<RegisterPlant />} />
           <Route path="/table" element={user ? <Table /> : <Table />} />
           <Route path="/types" element={<Types />} />
-          <Route path="/types/:tipoId" component={TipoPlanta} />
+          <Route path="/types/:tipoId" element={<Plants />} />
           <Route path="/editPlant/:id" element={<EditPlant />} />
           <Route path="/Plants" element={<Plants />} />
           <Route path="/dashboard" element={<Dashboard />} />
