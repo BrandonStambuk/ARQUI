@@ -11,7 +11,7 @@ import RegisterPlant from './components/RegisterPlant';
 import Table from './components/Table';
 import Types from './components/Types';
 import EditPlant from './components/EditPlant';
-import CarrouselPlant from './components/CarrouselPlant';
+import Plants from './components/Plants';
 import RegisterUser from './components/RegisterUser';
 import LoginUser from './components/LoginUser';
 import SignOut from './components/SignOut';
@@ -89,7 +89,6 @@ const App = () => {
   return (
     <div className="App">
       <BrowserRouter>
-        <Navbar />
         <Routes>
           <Route path="/" element={<ImageSection />} />
           <Route path="/about" element={<About />} />
@@ -98,8 +97,9 @@ const App = () => {
           <Route path="/register" element={<RegisterPlant />} />
           <Route path="/table" element={user ? <Table /> : <Table />} />
           <Route path="/types" element={<Types />} />
+          <Route path="/types/:tipoId" component={TipoPlanta} />
           <Route path="/editPlant/:id" element={<EditPlant />} />
-          <Route path="/CarrouselPlant/" element={<CarrouselPlant />} />
+          <Route path="/Plants" element={<Plants />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/registerUser" element={<RegisterUser />} />
           <Route path="/loginUser" element={<LoginUser />} />

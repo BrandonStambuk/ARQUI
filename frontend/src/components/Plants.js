@@ -6,7 +6,7 @@ import { Card } from "react-bootstrap";
 import Navbar from "./Navbar";
 import fondoImagen from "../images/jardin3.jpg";
 
-const RegisterPlant = () => {
+const Plants = () => {
   const plantas = [
     {
       id: 1,
@@ -82,4 +82,4 @@ const RegisterPlant = () => {
   );
 };
 
-export default RegisterPlant;
+export default Plants;
