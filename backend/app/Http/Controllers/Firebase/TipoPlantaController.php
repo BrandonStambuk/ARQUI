@@ -92,7 +92,7 @@ class TipoPlantaController extends Controller
         ]);
     }
 
-    public function plantas($id)
+    public function show($id)
     {
         
         $plantas = $this->tipoPlantaModel->obtenerPlantasPorTipoPlanta($id);
