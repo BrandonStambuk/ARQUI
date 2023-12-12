@@ -78,55 +78,55 @@ class Planta extends Model
         $reference = $this->database->getReference($this->tablename . '/' . $id);
         $planta = $reference->getValue();
 
-    // Obtener el nombre del bucket del objeto StorageClient
-    $storage = app('firebase.storage');
-    $bucketName = $storage->getBucket();
+        // Obtener el nombre del bucket del objeto StorageClient
+        $storage = app('firebase.storage');
+        $bucketName = $storage->getBucket();
 
-    // Inicializar $referenciasImagenes con un array vacío
-    $referenciasImagenes = [];
+        // Inicializar $referenciasImagenes con un array vacío
+        $referenciasImagenes = [];
 
-    // Eliminar las imágenes antiguas en el almacenamiento
-    if ($imagenes != null) {
-        // Verificar si la variable $planta['imagenes'] está definida
-        if (isset($planta['imagenes'])) {
-            foreach ($planta['imagenes'] as $imagen) {
-                $object = $bucketName->object($imagen);
+        // Eliminar las imágenes antiguas en el almacenamiento
+        if ($imagenes != null) {
+            // Verificar si la variable $planta['imagenes'] está definida
+            if (isset($planta['imagenes'])) {
+                foreach ($planta['imagenes'] as $imagen) {
+                    $object = $bucketName->object($imagen);
 
-                if ($object->exists()) {
-                    $object->delete();
+                    if ($object->exists()) {
+                        $object->delete();
+                    }
                 }
             }
+
+            // Subir y obtener las referencias de las nuevas imágenes
+            foreach ($imagenes as $imagen) {
+                $nombreImagen = $imagen->getClientOriginalName();
+                $path = 'Images/' . $nombreImagen;
+
+                $bucketName->upload(
+                    file_get_contents($imagen->getPathName()),
+                    ['name' => $path]
+                );
+
+                $referenciasImagenes[] = $path;
+            }
+        } else {
+            // Si no hay imágenes nuevas, mantener las referencias existentes
+            $referenciasImagenes = $planta['imagenes'] ?? [];
         }
 
-        // Subir y obtener las referencias de las nuevas imágenes
-        foreach ($imagenes as $imagen) {
-            $nombreImagen = $imagen->getClientOriginalName();
-            $path = 'Images/' . $nombreImagen;
+        // Actualizar los datos de la planta en Firestore
+        $reference->update([
+            'nombreCientifico' => $nombreCientifico,
+            'nombresComunes' => $nombresComunes,
+            'descripcion' => $descripcion,
+            'tipo_planta_id' => $tipoPlantaId,
+            'imagenes' => $referenciasImagenes,
+        ]);
 
-            $bucketName->upload(
-                file_get_contents($imagen->getPathName()),
-                ['name' => $path]
-            );
-
-            $referenciasImagenes[] = $path;
-        }
-    } else {
-        // Si no hay imágenes nuevas, mantener las referencias existentes
-        $referenciasImagenes = $planta['imagenes'] ?? [];
+        // Devolver la referencia de la planta actualizada
+        return $reference;
     }
-
-            // Actualizar los datos de la planta en Firestore
-            $reference->update([
-                'nombreCientifico' => $nombreCientifico,
-                'nombresComunes' => $nombresComunes,
-                'descripcion' => $descripcion,
-                'tipo_planta_id' => $tipoPlantaId,
-                'imagenes' => $referenciasImagenes,
-            ]);
-
-    // Devolver la referencia de la planta actualizada
-    return $reference;
-}
 
 
 
@@ -140,64 +140,64 @@ class Planta extends Model
     }
 
     public function listarPlantas()
-{
-    $reference = $this->database->getReference($this->tablename);
-    $plantas = $reference->getValue();
+    {
+        $reference = $this->database->getReference($this->tablename);
+        $plantas = $reference->getValue();
 
-    $plantasArray = [];
+        $plantasArray = [];
 
-    // Obtén la referencia a la tabla de tipos de planta
-    $tiposPlantaReference = $this->database->getReference('tipos_plantas');
-    $tiposPlanta = $tiposPlantaReference->getValue();
+        // Obtén la referencia a la tabla de tipos de planta
+        $tiposPlantaReference = $this->database->getReference('tipos_plantas');
+        $tiposPlanta = $tiposPlantaReference->getValue();
 
-    foreach ($plantas as $id => $planta) {
+        foreach ($plantas as $id => $planta) {
+            // Busca el tipo de planta por ID
+            $tipoPlanta = $tiposPlanta[$planta['tipo_planta_id']];
+
+            // Agrega el nombre del tipo de planta al array
+            $plantasArray[] = [
+                'id' => $id,
+                'nombreCientifico' => $planta['nombreCientifico'],
+                'nombresComunes' => $planta['nombresComunes'],
+                'descripcion' => $planta['descripcion'],
+                'tipo_planta_id' => $tipoPlanta['nombre'],
+                'imagenes' => $planta['imagenes'],
+            ];
+        }
+
+        return $plantasArray;
+    }
+
+
+    public function mostrarPlanta($id)
+    {
+        $reference = $this->database->getReference($this->tablename . '/' . $id);
+        $planta = $reference->getValue();
+
+        if (!$planta) {
+            return null;
+        }
+
+        // Obtén la referencia a la tabla de tipos de planta
+        $tiposPlantaReference = $this->database->getReference('tipos_plantas');
+        $tiposPlanta = $tiposPlantaReference->getValue();
+
         // Busca el tipo de planta por ID
-        $tipoPlanta = $tiposPlanta[$planta['tipo_planta_id']];
+        $tipoPlanta = $tiposPlanta[$planta['tipo_planta_id']] ?? null;
 
-        // Agrega el nombre del tipo de planta al array
-        $plantasArray[] = [
+        $plantaArray = [
             'id' => $id,
             'nombreCientifico' => $planta['nombreCientifico'],
             'nombresComunes' => $planta['nombresComunes'],
             'descripcion' => $planta['descripcion'],
-            'tipo_planta_id' => $tipoPlanta['nombre'],
+            //'tipoPlanta' => $tipoPlanta ? $tipoPlanta['nombre'] : null,
+            'tipoPlanta' => $planta['tipo_planta_id'],
             'imagenes' => $planta['imagenes'],
         ];
+
+        return $plantaArray;
     }
 
-    return $plantasArray;
-}
-
-
-public function mostrarPlanta($id)
-{
-    $reference = $this->database->getReference($this->tablename . '/' . $id);
-    $planta = $reference->getValue();
-
-    if (!$planta) {
-        return null;
-    }
-
-    // Obtén la referencia a la tabla de tipos de planta
-    $tiposPlantaReference = $this->database->getReference('tipos_plantas');
-    $tiposPlanta = $tiposPlantaReference->getValue();
-
-    // Busca el tipo de planta por ID
-    $tipoPlanta = $tiposPlanta[$planta['tipo_planta_id']] ?? null;
-
-    $plantaArray = [
-        'id' => $id,
-        'nombreCientifico' => $planta['nombreCientifico'],
-        'nombresComunes' => $planta['nombresComunes'],
-        'descripcion' => $planta['descripcion'],
-        //'tipoPlanta' => $tipoPlanta ? $tipoPlanta['nombre'] : null,
-        'tipoPlanta' => $planta['tipo_planta_id'],
-        'imagenes' => $planta['imagenes'],
-    ];
-
-    return $plantaArray;
-}
-
-    
+        
 
 }

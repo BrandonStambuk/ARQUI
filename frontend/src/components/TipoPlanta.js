@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-
 const endpoint = "http://127.0.0.1:8000/api";
-
 
 const TiposPlanta = () => {
   const [tiposPlanta, setTiposPlanta] = useState([]);
   const [nombreTipoPlanta, setNombreTipoPlanta] = useState("");
+  const [imagenTipoPlanta, setImagenTipoPlanta] = useState(null);
   const [tipoPlantaEditando, setTipoPlantaEditando] = useState(null);
 
   const obtenerTiposPlanta = async () => {
@@ -28,17 +27,27 @@ const TiposPlanta = () => {
     setNombreTipoPlanta(e.target.value);
   };
 
+  const handleImagenTipoPlantaChange = (e) => {
+    setImagenTipoPlanta(e.target.files[0]);
+  };
+
   const agregarTipoPlanta = async () => {
     try {
-      const response = await axios.post(`${endpoint}/insertarTipoPlanta`, {
-        nombre: nombreTipoPlanta,
+      const formData = new FormData();
+      formData.append("nombre", nombreTipoPlanta);
+      formData.append("imagen", imagenTipoPlanta);
+
+      const response = await axios.post(`${endpoint}/insertarTipoPlanta`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
 
       console.log(response.data);
 
-      // Actualizar la lista de tipos de planta después de agregar uno nuevo
       obtenerTiposPlanta();
-      setNombreTipoPlanta(""); // Limpiar el campo después de agregar
+      setNombreTipoPlanta("");
+      setImagenTipoPlanta(null);
     } catch (error) {
       console.error("Error al agregar tipo de planta:", error);
     }
@@ -53,16 +62,26 @@ const TiposPlanta = () => {
     if (!tipoPlantaEditando) return;
 
     try {
-      const response = await axios.put(`${endpoint}/actualizarTipoPlanta/${tipoPlantaEditando.id}`, {
-        nombre: nombreTipoPlanta,
-      });
+      const formData = new FormData();
+      formData.append("nombre", nombreTipoPlanta);
+      formData.append("imagen", imagenTipoPlanta);
+
+      const response = await axios.put(
+        `${endpoint}/actualizarTipoPlanta/${tipoPlantaEditando.id}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       console.log(response.data);
 
-      // Actualizar la lista de tipos de planta después de editar
       obtenerTiposPlanta();
-      setNombreTipoPlanta(""); // Limpiar el campo después de editar
-      setTipoPlantaEditando(null); // Desactivar el modo de edición
+      setNombreTipoPlanta("");
+      setImagenTipoPlanta(null);
+      setTipoPlantaEditando(null);
     } catch (error) {
       console.error("Error al editar tipo de planta:", error);
     }
@@ -74,7 +93,6 @@ const TiposPlanta = () => {
 
       console.log(response.data);
 
-      // Actualizar la lista de tipos de planta después de eliminar uno
       obtenerTiposPlanta();
     } catch (error) {
       console.error("Error al eliminar tipo de planta:", error);
@@ -85,17 +103,24 @@ const TiposPlanta = () => {
     <div>
       <h2>Tipos de Planta</h2>
       <ul>
-      {Array.isArray(tiposPlanta) && tiposPlanta.length > 0 ? (
-        tiposPlanta.map((tipoPlanta) => (
-          <li key={tipoPlanta.id}>
-            {tipoPlanta.nombre}
-            <button onClick={() => iniciarEdicionTipoPlanta(tipoPlanta)}>Editar</button>
-            <button onClick={() => eliminarTipoPlanta(tipoPlanta.id)}>Eliminar</button>
-          </li>
-        ))
-      ): (
-        <p>No hay tipos de planta</p>
-      )}
+        {Array.isArray(tiposPlanta) && tiposPlanta.length > 0 ? (
+          tiposPlanta.map((tipoPlanta) => (
+            <li key={tipoPlanta.id}>
+              {tipoPlanta.nombre}
+              {tipoPlanta.imagen && (
+                <img
+                  src={`URL_DE_TU_API/${tipoPlanta.imagen}`}
+                  alt={tipoPlanta.nombre}
+                  style={{ width: "50px", height: "50px" }}
+                />
+              )}
+              <button onClick={() => iniciarEdicionTipoPlanta(tipoPlanta)}>Editar</button>
+              <button onClick={() => eliminarTipoPlanta(tipoPlanta.id)}>Eliminar</button>
+            </li>
+          ))
+        ) : (
+          <p>No hay tipos de planta</p>
+        )}
       </ul>
       <div>
         <h3>{tipoPlantaEditando ? "Editar" : "Agregar"} Tipo de Planta</h3>
@@ -106,10 +131,24 @@ const TiposPlanta = () => {
           value={nombreTipoPlanta}
           onChange={handleNombreTipoPlantaChange}
         />
+        <label htmlFor="imagenTipoPlanta">Imagen:</label>
+        <input type="file" id="imagenTipoPlanta" value = {imagenTipoPlanta} onChange={handleImagenTipoPlantaChange} />
         {tipoPlantaEditando ? (
           <button onClick={editarTipoPlanta}>Guardar Cambios</button>
         ) : (
           <button onClick={agregarTipoPlanta}>Agregar</button>
+        )}
+
+        {tipoPlantaEditando && (
+          <button
+            onClick={() => {
+              setTipoPlantaEditando(null);
+              setNombreTipoPlanta("");
+              setImagenTipoPlanta(null);
+            }}
+          >
+            Cancelar
+          </button>
         )}
       </div>
     </div>

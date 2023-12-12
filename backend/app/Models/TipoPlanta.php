@@ -12,7 +12,9 @@ use Google\Cloud\Storage\StorageClient;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\UploadedFile;
 
+
 use Kreait\Laravel\Firebase\Facades\Firebase;
+use Kreait\Firebase\Exception\DatabaseException;
 
 class TipoPlanta extends Model
 {
@@ -33,11 +35,30 @@ class TipoPlanta extends Model
         return $this->hasMany(Planta::class);
     }
 
-    public function crearTipoPlanta($nombre)
+    public function crearTipoPlanta($nombre, $imagen)
     {
-        $this->database->getReference($this->tablename)->push([
+        /*$this->database->getReference($this->tablename)->push([
             'nombre' => $nombre
+        ]);*/
+
+        $storage = app('firebase.storage');
+        $bucket = $storage->getBucket();
+
+        $nombreImagen = $imagen->getClientOriginalName();
+
+        $path = 'Images/' . $nombreImagen;
+
+        $bucket->upload(
+            file_get_contents($imagen->getPathName()),
+            ['name' => $path]
+        );
+
+        $this->database->getReference($this->tablename)->push([
+            'nombre' => $nombre,
+            'imagen' => $path
         ]);
+
+        return true;
     }
 
     public function obtenerTiposPlantas()
@@ -50,7 +71,8 @@ class TipoPlanta extends Model
         foreach ($tiposPlantas as $id => $tipoPlanta) {
             $tiposPlantasArray[] = [
                 'id' => $id,
-                'nombre' => $tipoPlanta['nombre']
+                'nombre' => $tipoPlanta['nombre'],
+                'imagen' => $tipoPlanta['imagen']
             ];
         }
 
@@ -72,7 +94,31 @@ class TipoPlanta extends Model
 
     public function eliminarTipoPlanta($id)
     {
-        $this->database->getReference($this->tablename)->getChild($id)->remove();
+        // Obtén la referencia al tipo de planta
+        $tipoPlantaReference = $this->database->getReference($this->tablename . '/' . $id);
+        $tipoPlanta = $tipoPlantaReference->getValue();
+
+        // Verifica si el tipo de planta existe
+        if (!$tipoPlanta) {
+            return ['success' => false, 'message' => 'Tipo de planta no encontrado'];
+        }
+
+        // Obtén la referencia a las plantas
+        $plantasReference = $this->database->getReference('plantas');
+        $plantas = $plantasReference->getValue();
+
+        // Elimina todas las plantas asociadas a este tipo
+        foreach ($plantas as $plantaId => $planta) {
+            if ($planta['tipo_planta_id'] == $id) {
+                // Elimina la planta
+                $plantasReference->getChild($plantaId)->remove();
+            }
+        }
+
+        // Elimina el tipo de planta
+        $tipoPlantaReference->remove();
+
+        return ['success' => true, 'message' => 'Tipo de planta y plantas asociadas eliminadas'];
     }
 
     public function obtenerPlantasPorTipoPlanta($id)

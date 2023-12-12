@@ -8,6 +8,7 @@ use Kreait\Firebase\Database;
 use App\Models\TipoPlanta;
 use Kreait\Firebase\Storage;
 use Google\Cloud\Storage\StorageClient;
+use App\Models\Planta;
 
 
 class TipoPlantaController extends Controller
@@ -57,8 +58,9 @@ class TipoPlantaController extends Controller
     public function store(Request $request)
     {
         $nombre = $request->nombre;
+        $imagen = $request->file('imagen');
 
-        $this->tipoPlantaModel->crearTipoPlanta($nombre);
+        $this->tipoPlantaModel->crearTipoPlanta($nombre, $imagen);
 
         return response()->json([
             'success' => true,
@@ -69,8 +71,9 @@ class TipoPlantaController extends Controller
     public function update(Request $request, $id)
     {
         $nombre = $request->nombre;
+        $imagen = $request->file('imagenes');
 
-        $this->tipoPlantaModel->actualizarTipoPlanta($id, $nombre);
+        $this->tipoPlantaModel->actualizarTipoPlanta($id, $nombre, $imagen);
 
         return response()->json([
             'success' => true,
@@ -80,11 +83,12 @@ class TipoPlantaController extends Controller
 
     public function destroy($id)
     {
-        $this->tipoPlantaModel->eliminarTipoPlanta($id);
+        $respuesta = $this->tipoPlantaModel->eliminarTipoPlanta($id);
 
         return response()->json([
             'success' => true,
             'message' => 'Tipo de planta eliminado correctamente.',
+            'data' => $respuesta,
         ]);
     }
 
