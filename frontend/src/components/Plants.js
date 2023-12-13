@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { Card } from "react-bootstrap";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa"; // Importa los íconos
-
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import Navbar from "./Navbar";
 import fondoImagen from "../images/jardin3.jpg";
 
@@ -40,9 +39,9 @@ const Plants = () => {
     prevArrow: <PrevArrow />,
   };
 
-  console.log("ID del Tipo de Planta:", tipoId); // Imprime el ID
+  console.log("ID del Tipo de Planta:", tipoId);
 
-  return (
+   return (
     <div
       style={{
         backgroundImage: `url(${fondoImagen})`,
@@ -57,15 +56,16 @@ const Plants = () => {
         {plantas.length > 0 ? (
           <Slider {...settings}>
             {plantas.map((planta) => (
-              <div key={planta.id}>
-                <Card style={{ width: "18rem" }}>
-                  <Card.Img variant="top" src={planta.imagen} />
-                  <Card.Body>
-                    <Card.Title>{planta.nombreCientifico}</Card.Title>
-                    
-                  </Card.Body>
-                </Card>
-              </div>
+              <Link key={planta.id} to={`/plant/${planta.id}`} style={{ textDecoration: 'none' }}>
+                <div>
+                  <Card style={{ width: "18rem" }}>
+                    <Card.Img variant="top" src={planta.imagen} />
+                    <Card.Body>
+                      <Card.Title>{planta.nombreCientifico}</Card.Title>
+                    </Card.Body>
+                  </Card>
+                </div>
+              </Link>
             ))}
           </Slider>
         ) : (
@@ -76,7 +76,6 @@ const Plants = () => {
   );
 };
 
-// Componente para la flecha de siguiente
 const NextArrow = (props) => {
   const { className, style, onClick } = props;
   return (
@@ -88,7 +87,6 @@ const NextArrow = (props) => {
   );
 };
 
-// Componente para la flecha anterior
 const PrevArrow = (props) => {
   const { className, style, onClick } = props;
   return (
