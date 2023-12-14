@@ -19,6 +19,7 @@ function ImageSection() {
   const images = [imagen1, imagen2];
   return (
     <div>
+      <Navbar></Navbar>
       <div className="container-imagen" style={estiloFondo}>
         <div className="imagen-jardin">
           <div className="col-md-12">

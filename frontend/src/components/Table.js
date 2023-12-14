@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import QRious from 'qrious';
 
 const PlantList = () => {
   const [plantas, setPlantas] = useState([]);
@@ -29,9 +30,7 @@ const PlantList = () => {
   };
 
   const obtenerNombresComunes = (nombresComunes) => {
-    // Si nombresComunes es un array de objetos, extraer los nombres
     const nombres = nombresComunes.map((nombreComun) => {
-      // Verificar si es un objeto o ya es un string
       if (typeof nombreComun === 'object') {
         return nombreComun.nombre;
       }
@@ -43,7 +42,7 @@ const PlantList = () => {
 
   const convertirHtmlATexto = (htmlString) => {
     const doc = new DOMParser().parseFromString(htmlString, 'text/html');
-    return doc.body.textContent || "";
+    return doc.body.textContent || '';
   };
 
   return (
@@ -75,6 +74,23 @@ const PlantList = () => {
                       </Link>
                       <button onClick={() => handleEliminar(planta.id)} className="btn btn-danger">
                         Eliminar
+                      </button>
+                      {/* Botón para generar QR */}
+                      <button
+                        onClick={() => {
+                          const qrCodeData = `https://midominioetc.com/plants/${planta.id}`;
+                          const qr = new QRious({
+                            value: qrCodeData,
+                            size: 300, // Puedes ajustar el tamaño según tus necesidades
+                          });
+
+                          // Abrir el código QR en una nueva pestaña
+                          const newWindow = window.open();
+                          newWindow.document.write(`<img src="${qr.toDataURL('image/png')}" alt="QR Code"/>`);
+                        }}
+                        className="btn btn-info mr-2"
+                      >
+                        QR
                       </button>
                     </td>
                   </tr>
