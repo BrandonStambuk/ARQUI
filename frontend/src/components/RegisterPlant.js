@@ -60,7 +60,10 @@ const RegisterPlant = () => {
       MySwal.fire({
         icon: "success",
         title: "Planta registrada correctamente",
-        confirmButtonText: "Ir a tabla de plantas",
+        confirmButtonText: "Ir tabla de plantas",
+       // buttonsStyling: false, // Desactiva el estilo de botones predeterminado de SweetAlert2
+        confirmButtonColor: '#006400', // Establece el color de fondo del botón
+        confirmButtonTextColor: '#fff',
       }).then(() => {
         navigate("/table"); // O redirige a la página que desees después de la alerta
       });

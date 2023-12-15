@@ -11,6 +11,7 @@ import { Editor } from "@tinymce/tinymce-react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { useNavigate } from "react-router-dom";
+import { Spinner } from "react-bootstrap";
 const endpoint = "http://127.0.0.1:8000/api";
 
 // Configura tu proyecto Firebase
@@ -131,7 +132,10 @@ const EditPlant = () => {
       MySwal.fire({
         icon: "success",
         title: "Planta actualizada correctamente",
-        confirmButtonText: "Entendido",
+        confirmButtonText: "Ir tabla de plantas",
+       // buttonsStyling: false, // Desactiva el estilo de botones predeterminado de SweetAlert2
+        confirmButtonColor: '#006400', // Establece el color de fondo del botón
+        confirmButtonTextColor: '#fff',
       }).then(() => {
         navigate("/table")
       });
@@ -166,10 +170,17 @@ const EditPlant = () => {
     newNombresComunes.splice(index, 1);
     setNombresComunes(newNombresComunes);
   };
-
   if (!plantData) {
-    return <p>Cargando datos de la planta...</p>;
+    return (
+      <div className="d-flex justify-content-center align-items-center vh-100">
+        <div>
+          <Spinner animation="border" variant="dark" />
+          <p className="mt-3 text-dark">Cargando datos de la planta...</p>
+        </div>
+      </div>
+    );
   }
+
 
   return (
     <div
