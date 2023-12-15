@@ -62,23 +62,29 @@ class TipoPlanta extends Model
     }
 
     public function obtenerTiposPlantas()
-    {
-        $reference = $this->database->getReference($this->tablename);
-        $tiposPlantas = $reference->getValue();
+{
+    $reference = $this->database->getReference($this->tablename);
+    $tiposPlantas = $reference->getValue();
 
-        $tiposPlantasArray = [];
+    $tiposPlantasArray = [];
 
-        foreach ($tiposPlantas as $id => $tipoPlanta) {
-            $tiposPlantasArray[] = [
-                'id' => $id,
-                'nombre' => $tipoPlanta['nombre'],
-                'imagen' => $tipoPlanta['imagen']
-            ];
+    foreach ($tiposPlantas as $id => $tipoPlanta) {
+        // Verifica si 'nombre' está definido en $tipoPlanta
+        if (isset($tipoPlanta['nombre'])) {
+            $nombre = $tipoPlanta['nombre'];
+        } else {
+            $nombre = 'Nombre no definido'; // o el valor que desees establecer en caso de que 'nombre' no esté definido
         }
 
-        return $tiposPlantasArray;
+        $tiposPlantasArray[] = [
+            'id' => $id,
+            'imagen' => $tipoPlanta['imagen'],
+            'nombre' => $nombre
+        ];
     }
 
+    return $tiposPlantasArray;
+}
     public function obtenerTipoPlanta($id)
     {
         $tipoPlanta = $this->database->getReference($this->tablename)->getChild($id)->getValue();
@@ -97,16 +103,16 @@ class TipoPlanta extends Model
         // Obtén la referencia al tipo de planta
         $tipoPlantaReference = $this->database->getReference($this->tablename . '/' . $id);
         $tipoPlanta = $tipoPlantaReference->getValue();
-
+    
         // Verifica si el tipo de planta existe
         if (!$tipoPlanta) {
             return ['success' => false, 'message' => 'Tipo de planta no encontrado'];
         }
-
+    
         // Obtén la referencia a las plantas
         $plantasReference = $this->database->getReference('plantas');
         $plantas = $plantasReference->getValue();
-
+    
         // Elimina todas las plantas asociadas a este tipo
         foreach ($plantas as $plantaId => $planta) {
             if ($planta['tipo_planta_id'] == $id) {
@@ -114,10 +120,10 @@ class TipoPlanta extends Model
                 $plantasReference->getChild($plantaId)->remove();
             }
         }
-
+    
         // Elimina el tipo de planta
         $tipoPlantaReference->remove();
-
+    
         return ['success' => true, 'message' => 'Tipo de planta y plantas asociadas eliminadas'];
     }
 

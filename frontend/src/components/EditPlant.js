@@ -3,12 +3,14 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { Card, Form, Button, Col, Row } from "react-bootstrap";
-import Navbar from "./Navbar";
+import NavbarAdmin from "./NavbarAdmin";
 import fondoImagen from "../images/jardin3.jpg";
 import { initializeApp } from "firebase/app";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import { Editor } from "@tinymce/tinymce-react";
-
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import { useNavigate } from "react-router-dom";
 const endpoint = "http://127.0.0.1:8000/api";
 
 // Configura tu proyecto Firebase
@@ -28,7 +30,7 @@ const app = initializeApp(firebaseConfig);
 
 // Obtén una referencia al storage de Firebase
 const storage = getStorage(app);
-
+const MySwal = withReactContent(Swal);
 const EditPlant = () => {
   const { id } = useParams();
   const [nombreCientifico, setNombreCientifico] = useState("");
@@ -39,7 +41,7 @@ const EditPlant = () => {
   const [imagenes, setImagenes] = useState([]);
   const [plantData, setPlantData] = useState(null);
   const [tiposPlantaLoaded, setTiposPlantaLoaded] = useState(false);
-
+  const navigate = useNavigate(); 
   useEffect(() => {
     const fetchPlantData = async () => {
       try {
@@ -126,6 +128,13 @@ const EditPlant = () => {
       );
   
       console.log(response.data);
+      MySwal.fire({
+        icon: "success",
+        title: "Planta actualizada correctamente",
+        confirmButtonText: "Entendido",
+      }).then(() => {
+        navigate("/table")
+      });
     } catch (error) {
       console.log(formData);
       console.error(
@@ -165,12 +174,11 @@ const EditPlant = () => {
   return (
     <div
       style={{
-        backgroundImage: `url(${fondoImagen})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
-      <Navbar></Navbar>
+      <NavbarAdmin></NavbarAdmin>
       <Card>
         <Card.Body>
           <Card.Title>Editar Planta</Card.Title>

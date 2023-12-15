@@ -5,6 +5,10 @@ import Navbar from "./Navbar";
 import axios from "axios";
 import fondoImagen from "../images/jardin3.jpg"; // Asegúrate de proporcionar la ruta correcta
 import { Editor } from "@tinymce/tinymce-react";
+import MySwal from "sweetalert2";
+import { useNavigate } from "react-router-dom"; // Importa useNavigate desde react-router-dom
+// Usa useNavigate para obtener la función navigate
+
 const endpoint = "http://127.0.0.1:8000/api";
 
 const RegisterPlant = () => {
@@ -14,7 +18,7 @@ const RegisterPlant = () => {
   const [imagenes, setImagenes] = useState([]);
   const [tipoPlanta, setTipoPlanta] = useState("");
   const [tiposPlanta, setTiposPlanta] = useState([]);
-
+  const navigate = useNavigate(); 
   useEffect(() => {
     // Obtener los tipos de planta disponibles
     const obtenerTiposPlanta = async () => {
@@ -54,6 +58,13 @@ const RegisterPlant = () => {
       });
 
       console.log(response.data);
+      MySwal.fire({
+        icon: "success",
+        title: "Planta registrada correctamente",
+        confirmButtonText: "Ir a tabla de plantas",
+      }).then(() => {
+        navigate("/table"); // O redirige a la página que desees después de la alerta
+      });
     } catch (error) {
       console.log("Error al enviar la solicitud:", error);
     }
@@ -96,7 +107,6 @@ const RegisterPlant = () => {
   return (
     <div
       style={{
-        backgroundImage: `url(${fondoImagen})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
@@ -213,9 +223,6 @@ const RegisterPlant = () => {
               <div className="mb-3 text-center">
                 <button type="submit" className="btn btn-primary">
                   Enviar
-                </button>
-                <button type="submit" style={{ marginLeft: "5px" }} className="btn btn-primary">
-                  Generar QR
                 </button>
               </div>
             </form>

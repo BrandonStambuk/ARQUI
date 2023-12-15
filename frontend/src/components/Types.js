@@ -37,7 +37,7 @@ const ImageLoader = ({ imagePath, alt }) => {
 
 const Types = () => {
   const estiloFondo = {
-    backgroundImage: `url(${jardin2})`,
+   
     backgroundSize: "cover",
     backgroundPosition: "center",
     height: "200vh",

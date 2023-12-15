@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 
-const CarouselComponent = ({ images }) => {
+const CarouselComponent = ({ images, imageStyle }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const handleNext = () => {
@@ -21,7 +21,12 @@ const CarouselComponent = ({ images }) => {
             <img
               src={image}
               alt={`Imagen ${index + 1}`}
-              style={{ maxWidth: '600px', maxHeight: '500px' }}
+              style={{
+                width: '200px', // Ancho personalizado o 100% por defecto
+                height:'200px', // Alto personalizado o 100% por defecto
+                objectFit: 'cover',
+                ...imageStyle, // Cualquier estilo adicional proporcionado
+              }}
             />
           </div>
         ))}

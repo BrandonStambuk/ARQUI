@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Card, Table, Form, Button } from "react-bootstrap";
+import { getStorage, ref, getDownloadURL } from 'firebase/storage';
+import NavbarAdmin from './NavbarAdmin';
 
 const endpoint = "http://127.0.0.1:8000/api";
 
@@ -9,19 +12,31 @@ const TiposPlanta = () => {
   const [imagenTipoPlanta, setImagenTipoPlanta] = useState(null);
   const [tipoPlantaEditando, setTipoPlantaEditando] = useState(null);
 
+  const storage = getStorage();
+
+  useEffect(() => {
+    obtenerTiposPlanta();
+  }, [storage]);
+
   const obtenerTiposPlanta = async () => {
     try {
       const response = await axios.get(`${endpoint}/obtenerTiposPlantas`);
-      setTiposPlanta(response.data.data);
-      console.log("Tipos de planta cargados:", response.data);
+      const tiposPlantaConUrl = await Promise.all(
+        response.data.data.map(async (tipoPlanta) => {
+          if (tipoPlanta.imagen) {
+            const imageRef = ref(storage, `${tipoPlanta.imagen}`);
+            const imageUrl = await getDownloadURL(imageRef);
+            return { ...tipoPlanta, imageUrl };
+          }
+          return tipoPlanta;
+        })
+      );
+      setTiposPlanta(tiposPlantaConUrl);
+      console.log("Tipos de planta cargados:", tiposPlantaConUrl);
     } catch (error) {
       console.error("Error al obtener tipos de planta:", error);
     }
   };
-
-  useEffect(() => {
-    obtenerTiposPlanta();
-  }, []);
 
   const handleNombreTipoPlantaChange = (e) => {
     setNombreTipoPlanta(e.target.value);
@@ -101,56 +116,94 @@ const TiposPlanta = () => {
 
   return (
     <div>
-      <h2>Tipos de Planta</h2>
-      <ul>
-        {Array.isArray(tiposPlanta) && tiposPlanta.length > 0 ? (
-          tiposPlanta.map((tipoPlanta) => (
-            <li key={tipoPlanta.id}>
-              {tipoPlanta.nombre}
-              {tipoPlanta.imagen && (
-                <img
-                  src={`URL_DE_TU_API/${tipoPlanta.imagen}`}
-                  alt={tipoPlanta.nombre}
-                  style={{ width: "50px", height: "50px" }}
+      <NavbarAdmin />
+      <Card>
+        <Card.Header>
+          <h2>Tipos de Planta</h2>
+        </Card.Header>
+        <Card.Body>
+          <Form>
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nombre</th>
+                  <th>Imagen</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Array.isArray(tiposPlanta) && tiposPlanta.length > 0 ? (
+                  tiposPlanta.map((tipoPlanta) => (
+                    <tr key={tipoPlanta.id}>
+                      <td>{tipoPlanta.id}</td>
+                      <td>{tipoPlanta.nombre}</td>
+                      <td>
+                        {tipoPlanta.imageUrl && (
+                          <img
+                            src={tipoPlanta.imageUrl}
+                            alt={tipoPlanta.nombre}
+                            style={{ width: "50px", height: "50px" }}
+                          />
+                        )}
+                      </td>
+                      <td>
+                        <Button onClick={() => iniciarEdicionTipoPlanta(tipoPlanta)}>
+                          Editar
+                        </Button>
+                        <Button variant="danger" onClick={() => eliminarTipoPlanta(tipoPlanta.id)}>
+                          Eliminar
+                        </Button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="4">No hay tipos de planta</td>
+                  </tr>
+                )}
+              </tbody>
+            </Table>
+            <div>
+              <h3>{tipoPlantaEditando ? "Editar" : "Agregar"} Tipo de Planta</h3>
+              <Form.Group controlId="nombreTipoPlanta">
+                <Form.Label>Nombre:</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={nombreTipoPlanta}
+                  onChange={handleNombreTipoPlantaChange}
                 />
+              </Form.Group>
+              <Form.Group controlId="imagenTipoPlanta">
+                <Form.Label>Imagen:</Form.Label>
+                <Form.Control type="file" onChange={handleImagenTipoPlantaChange} />
+              </Form.Group>
+              {tipoPlantaEditando ? (
+                <Button variant="success" onClick={editarTipoPlanta}>
+                  Guardar Cambios
+                </Button>
+              ) : (
+                <Button variant="primary" onClick={agregarTipoPlanta}>
+                  Agregar
+                </Button>
               )}
-              <button onClick={() => iniciarEdicionTipoPlanta(tipoPlanta)}>Editar</button>
-              <button onClick={() => eliminarTipoPlanta(tipoPlanta.id)}>Eliminar</button>
-            </li>
-          ))
-        ) : (
-          <p>No hay tipos de planta</p>
-        )}
-      </ul>
-      <div>
-        <h3>{tipoPlantaEditando ? "Editar" : "Agregar"} Tipo de Planta</h3>
-        <label htmlFor="nombreTipoPlanta">Nombre:</label>
-        <input
-          type="text"
-          id="nombreTipoPlanta"
-          value={nombreTipoPlanta}
-          onChange={handleNombreTipoPlantaChange}
-        />
-        <label htmlFor="imagenTipoPlanta">Imagen:</label>
-        <input type="file" id="imagenTipoPlanta"onChange={handleImagenTipoPlantaChange} />
-        {tipoPlantaEditando ? (
-          <button onClick={editarTipoPlanta}>Guardar Cambios</button>
-        ) : (
-          <button onClick={agregarTipoPlanta}>Agregar</button>
-        )}
 
-        {tipoPlantaEditando && (
-          <button
-            onClick={() => {
-              setTipoPlantaEditando(null);
-              setNombreTipoPlanta("");
-              setImagenTipoPlanta(null);
-            }}
-          >
-            Cancelar
-          </button>
-        )}
-      </div>
+              {tipoPlantaEditando && (
+                <Button
+                  variant="secondary"
+                  onClick={() => {
+                    setTipoPlantaEditando(null);
+                    setNombreTipoPlanta("");
+                    setImagenTipoPlanta(null);
+                  }}
+                >
+                  Cancelar
+                </Button>
+              )}
+            </div>
+          </Form>
+        </Card.Body>
+      </Card>
     </div>
   );
 };

@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import QRious from 'qrious';
-
+import NavbarAdmin from './NavbarAdmin';
+import { Navbar } from 'react-bootstrap';
 const PlantList = () => {
   const [plantas, setPlantas] = useState([]);
 
@@ -47,6 +48,7 @@ const PlantList = () => {
 
   return (
     <div>
+      <NavbarAdmin></NavbarAdmin>
       <div className="card bg-transparent">
         <h1 className="card-header">Listado de Plantas</h1>
         <div className="tarjeta-body">
@@ -78,10 +80,10 @@ const PlantList = () => {
                       {/* Botón para generar QR */}
                       <button
                         onClick={() => {
-                          const qrCodeData = `https://midominioetc.com/plants/${planta.id}`;
+                          const qrCodeData = `https://JardinBotanicoMartinCardenas.com/plants/${planta.id}`;
                           const qr = new QRious({
                             value: qrCodeData,
-                            size: 300, // Puedes ajustar el tamaño según tus necesidades
+                            size: 700, // Puedes ajustar el tamaño según tus necesidades
                           });
 
                           // Abrir el código QR en una nueva pestaña
