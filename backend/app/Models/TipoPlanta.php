@@ -85,11 +85,26 @@ class TipoPlanta extends Model
         return $tipoPlanta;
     }
 
-    public function actualizarTipoPlanta($id, $nombre)
+    public function actualizarTipoPlanta($id, $nombre, $imagen)
     {
+        $storage = app('firebase.storage');
+        $bucket = $storage->getBucket();
+
+        $nombreImagen = $imagen->getClientOriginalName();
+
+        $path = 'Images/' . $nombreImagen;
+
+        $bucket->upload(
+            file_get_contents($imagen->getPathName()),
+            ['name' => $path]
+        );
+
         $this->database->getReference($this->tablename)->getChild($id)->update([
-            'nombre' => $nombre
+            'nombre' => $nombre,
+            'imagen' => $path
         ]);
+
+        return true;
     }
 
     public function eliminarTipoPlanta($id)
