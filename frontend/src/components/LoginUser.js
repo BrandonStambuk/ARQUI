@@ -3,7 +3,7 @@ import { initializeApp } from 'firebase/app';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 import { useNavigate } from "react-router-dom";
 import { Card, Form, Button } from "react-bootstrap";
-import NavbarAdmin from "./NavbarAdmin";
+import Navbar from "./Navbar";
 
 const endpoint = "http://127.0.0.1:8000/api";
 
@@ -55,7 +55,7 @@ const LoginComponent = () => {
 
   return (
     <div>
-      <NavbarAdmin />
+      <Navbar/>
       <Card style={{ width: '300px', margin: 'auto', marginTop: '50px' }}>
         <Card.Body>
           <Card.Title>Iniciar Sesión</Card.Title>

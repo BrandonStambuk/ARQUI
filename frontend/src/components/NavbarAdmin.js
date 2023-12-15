@@ -40,7 +40,7 @@ function Navbar() {
             </li>
             <li className="nav-item">
               {/* Agrega la función handleSignOut al hacer clic en Cerrar Sesión */}
-              <span className="nav-link" onClick={handleSignOut}>Cerrar Sesión</span>
+              <Link className="nav-link" onClick={handleSignOut}>Cerrar Sesión</Link>
             </li>
           </ul>
         </div>

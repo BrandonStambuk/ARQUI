@@ -31,8 +31,14 @@ const CarouselComponent = ({ images, imageStyle }) => {
           </div>
         ))}
       </Carousel>
-      <button onClick={handlePrev}>Anterior</button>
-      <button onClick={handleNext}>Siguiente</button>
+      <div style={{ marginTop: '10px', display: 'flex', justifyContent: 'space-between' }}>
+        <button type="button" className="btn btn-primary" onClick={handlePrev}>
+          Anterior
+        </button>
+        <button type="button" className="btn btn-primary" onClick={handleNext}>
+          Siguiente
+        </button>
+      </div>
     </div>
   );
 };
