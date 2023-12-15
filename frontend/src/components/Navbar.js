@@ -13,7 +13,7 @@ function Navbar() {
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav">
+          <ul className="navbar-nav ml-auto"> {/* Agrega la clase ml-auto al contenedor de la lista */}
             <li className="nav-item">
               <Link className="nav-link" to="/">Home</Link>
             </li>
@@ -22,6 +22,10 @@ function Navbar() {
             </li>
             <li className="nav-item">
               <Link className="nav-link" to="/types">Tipos de plantas</Link>
+            </li>
+
+            <li className="nav-item">
+              <Link className="nav-link" to="/loginUser">Iniciar Sesion</Link>
             </li>
           </ul>
         </div>

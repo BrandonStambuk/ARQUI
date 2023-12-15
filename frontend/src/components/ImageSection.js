@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/ImageSection.css';
 import Navbar from './Navbar';
 import Carrousel from './Carrousel';
-import jardin2 from "../images/jardin2.jpg";
+import jardin2 from "../images/jj.jpg";
 import imagen1 from "../images/j1.jpg";
 import imagen2 from "../images/j2.jpg";
 import About from './About';
