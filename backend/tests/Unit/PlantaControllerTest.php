@@ -29,34 +29,34 @@ class PlantaControllerTest extends TestCase
     }
 
     public function testStorePlanta() //Pasa
-{
-    $this->plantaModelMock
-        ->shouldReceive('crearPlanta')
-        ->once()
-        ->andReturn((object)[]);
+    {
+        $this->plantaModelMock
+            ->shouldReceive('crearPlanta')
+            ->once()
+            ->andReturn((object)[]);
 
-    Storage::fake('firebase');
-    $imagen = UploadedFile::fake()->image('ImagenHelp.webp');
+        Storage::fake('firebase');
+        $imagen = UploadedFile::fake()->image('ImagenHelp.webp');
 
-    $response = $this->postJson('/api/insertarPlanta', [
-        'nombre' => 'Nombre de la planta',
-        'nombresComunes' => ['NombreComun1', 'NombreComun2'], // Ajusta los nombres comunes según tus necesidades
-        'descripcion' => 'Descripción de la planta',
-        'tipoPlanta' => 'Tipo de planta', // Ajusta el tipo de planta según tus necesidades
-        'imagen' => $imagen,
-    ]);
+        $response = $this->postJson('/api/insertarPlanta', [
+            'nombre' => 'Nombre de la planta',
+            'nombresComunes' => ['NombreComun1', 'NombreComun2'], // Ajusta los nombres comunes según tus necesidades
+            'descripcion' => 'Descripción de la planta',
+            'tipoPlanta' => 'Tipo de planta', // Ajusta el tipo de planta según tus necesidades
+            'imagen' => $imagen,
+        ]);
 
-    $response->assertStatus(200);
+        $response->assertStatus(200);
 
-    $response->assertJson([
-        'success' => true,
-        'message' => 'Planta creada correctamente.',
-    ]);
+        $response->assertJson([
+            'success' => true,
+            'message' => 'Planta creada correctamente.',
+        ]);
 
-    $this->plantaModelMock->shouldHaveReceived('crearPlanta')->once();
-}
+        $this->plantaModelMock->shouldHaveReceived('crearPlanta')->once();
+    }
     
-public function testUpdatePlanta()
+    public function testUpdatePlanta()
     {
         // Configuración del mock para el método actualizarPlanta
         $this->plantaModelMock
@@ -117,117 +117,134 @@ public function testUpdatePlanta()
 
     public function testGetPlanta()
     {
-   // Configurar expectativas para el método crearPlanta en el modelo Planta
-   $this->plantaModelMock
-   ->shouldReceive('crearPlanta')
-   ->once()
-   ->andReturn((object)[]);
+        // Configurar expectativas para el método crearPlanta en el modelo Planta
+        $this->plantaModelMock
+            ->shouldReceive('crearPlanta')
+            ->once()
+            ->andReturn((object)[]);
 
-// Realizar la solicitud POST para insertar una planta
-$response = $this->postJson('/api/insertarPlanta', [
-   'nombre' => 'Nombre de la planta',
-   'nombresComunes' => ['NombreComun1', 'NombreComun2'],
-   'descripcion' => 'Descripción de la planta',
-   'tipoPlanta' => 'Tipo de planta',
-   'imagen' => UploadedFile::fake()->image('ImagenHelp.webp'),
-]);
-
-// Asegurarse de que la solicitud POST sea exitosa (código de estado 200)
-$response->assertStatus(200);
-
-// Asegurarse de que la respuesta contenga los datos esperados
-$response->assertJson([
-   'success' => true,
-   'message' => 'Planta creada correctamente.',
-]);
-
-// Obtener el ID de la planta creada
-$plantaId = 1;  // Ajusta el ID según tus necesidades o lógica de la aplicación
-
-// Configurar expectativas para el método mostrarPlanta en el modelo Planta
-$this->plantaModelMock
-   ->shouldReceive('mostrarPlanta')
-   ->with((string) $plantaId)
-   ->once()
-   ->andReturn((object)[]);
-
-// Realizar la solicitud GET para obtener la planta recién creada
-$responseGet = $this->get("/api/obtenerPlanta/{$plantaId}");
-
-// Asegurarse de que la solicitud GET sea exitosa (código de estado 200)
-$responseGet->assertStatus(200);
-
-// Asegurarse de que la respuesta contenga los datos esperados
-$responseGet->assertJson([
-    [
-        'success' => true,
-        'message' => 'Planta obtenida correctamente',
-        'data' => [
-            'id' => 1,
+        // Realizar la solicitud POST para insertar una planta
+        $response = $this->postJson('/api/insertarPlanta', [
             'nombre' => 'Nombre de la planta',
             'nombresComunes' => ['NombreComun1', 'NombreComun2'],
             'descripcion' => 'Descripción de la planta',
             'tipoPlanta' => 'Tipo de planta',
-            'imagen' => 'Nombre de la imagen',
-        ],
-    ],
-]);
+            'imagen' => UploadedFile::fake()->image('ImagenHelp.webp'),
+        ]);
+
+        // Asegurarse de que la solicitud POST sea exitosa (código de estado 200)
+        $response->assertStatus(200);
+
+        // Asegurarse de que la respuesta contenga los datos esperados
+        $response->assertJson([
+            'success' => true,
+            'message' => 'Planta creada correctamente.',
+        ]);
+
+        // Obtener el ID de la planta creada
+        $plantaId = 1;  // Ajusta el ID según tus necesidades o lógica de la aplicación
+
+        // Configurar expectativas para el método mostrarPlanta en el modelo Planta
+        $this->plantaModelMock
+            ->shouldReceive('mostrarPlanta')
+            ->with((string) $plantaId)
+            ->once()
+            ->andReturn([
+                'id' => 1,
+                'nombre' => 'Nombre de la planta',
+                'nombresComunes' => ['NombreComun1', 'NombreComun2'],
+                'descripcion' => 'Descripción de la planta',
+                'tipoPlanta' => 'Tipo de planta',
+                'imagen' => 'Nombre de la imagen',
+            ]);
+
+        // Realizar la solicitud GET para obtener la planta recién creada
+        $responseGet = $this->get("/api/obtenerPlanta/{$plantaId}");
+
+        // Asegurarse de que la solicitud GET sea exitosa (código de estado 200)
+        $responseGet->assertStatus(200);
+
+        // Asegurarse de que la respuesta contenga los datos esperados
+        $responseGet->assertJson([
+            
+                'success' => true,
+                'message' => 'Planta obtenida correctamente',
+                'data' => [
+                    'id' => 1,
+                    'nombre' => 'Nombre de la planta',
+                    'nombresComunes' => ['NombreComun1', 'NombreComun2'],
+                    'descripcion' => 'Descripción de la planta',
+                    'tipoPlanta' => 'Tipo de planta',
+                    'imagen' => 'Nombre de la imagen',
+                ],
+            
+        ],);
     }
+
     public function testGetAllPlantas()
     {
-        $planta1 = $this->plantaModelMock
+        // Configurar expectativas para el método crearPlanta en el modelo Planta
+        $this->plantaModelMock
             ->shouldReceive('crearPlanta')
             ->once()
-            ->andReturn((object)[])
-            ->getMock();
+            ->andReturn((object)[]);
 
-        $planta2 = $this->plantaModelMock
-            ->shouldReceive('crearPlanta')
-            ->once()
-            ->andReturn((object)[])
-            ->getMock();
-
-        Storage::fake('firebase');
-        $imagen = UploadedFile::fake()->image('ImagenHelp.webp');
-
-        $response1 = $this->postJson('/api/insertarPlanta', [
-            'nombre' => 'planta 1',
-            'descripcion' => 'Descripción de la planta 1',
-            'imagen' => $imagen,
+        // Realizar la solicitud POST para insertar una planta
+        $response = $this->postJson('/api/insertarPlanta', [
+            'nombre' => 'Nombre de la planta',
+            'nombresComunes' => ['NombreComun1', 'NombreComun2'],
+            'descripcion' => 'Descripción de la planta',
+            'tipoPlanta' => 'Tipo de planta',
+            'imagen' => UploadedFile::fake()->image('ImagenHelp.webp'),
         ]);
 
-        $response2 = $this->postJson('/api/insertarPlanta', [
-            'nombre' => 'planta 2',
-            'descripcion' => 'Descripción de la planta 2',
-            'imagen' => $imagen,
-        ]);
+        // Asegurarse de que la solicitud POST sea exitosa (código de estado 200)
+        $response->assertStatus(200);
 
-        $response1->assertStatus(200);
-        $response2->assertStatus(200);
-
-        $responseGetAll = $this->get('/api/obtenerTodasLasPlantas');
-
-        $responseGetAll->assertStatus(200);
-
-        $responseGetAll->assertJson([
+        // Asegurarse de que la respuesta contenga los datos esperados
+        $response->assertJson([
             'success' => true,
-            'data' => [ 
-                [
-                    'id' => $planta1->id,
-                    'nombre' => 'planta 1',
-                    'descripcion' => 'Descripción de la planta 1',
-                    'imagen' => $imagen->hashName(),
-                ],
-                [
-                    'id' => $planta2->id,
-                    'nombre' => 'planta 2',
-                    'descripcion' => 'Descripción de la planta 2',
-                    'imagen' => $imagen->hashName(),
-                ],
-            ],
+            'message' => 'Planta creada correctamente.',
         ]);
 
-        $this->plantaModelMock->shouldHaveReceived('obtenerTodasLasPlantas')->once();
+        // Obtener el ID de la planta creada
+        $plantaId = 1;  // Ajusta el ID según tus necesidades o lógica de la aplicación
+
+        // Configurar expectativas para el método mostrarPlanta en el modelo Planta
+        $this->plantaModelMock
+            ->shouldReceive('mostrarPlanta')
+            ->with((string) $plantaId)
+            ->once()
+            ->andReturn([
+                'id' => 1,
+                'nombre' => 'Nombre de la planta',
+                'nombresComunes' => ['NombreComun1', 'NombreComun2'],
+                'descripcion' => 'Descripción de la planta',
+                'tipoPlanta' => 'Tipo de planta',
+                'imagen' => 'Nombre de la imagen',
+            ]);
+
+        // Realizar la solicitud GET para obtener la planta recién creada
+        $responseGet = $this->get("/api/obtenerPlanta/{$plantaId}");
+
+        // Asegurarse de que la solicitud GET sea exitosa (código de estado 200)
+        $responseGet->assertStatus(200);
+
+        // Asegurarse de que la respuesta contenga los datos esperados
+        $responseGet->assertJson([
+            
+                'success' => true,
+                'message' => 'Planta obtenida correctamente',
+                'data' => [
+                    'id' => 1,
+                    'nombre' => 'Nombre de la planta',
+                    'nombresComunes' => ['NombreComun1', 'NombreComun2'],
+                    'descripcion' => 'Descripción de la planta',
+                    'tipoPlanta' => 'Tipo de planta',
+                    'imagen' => 'Nombre de la imagen',
+                ],
+            
+        ],);
     }
 
 

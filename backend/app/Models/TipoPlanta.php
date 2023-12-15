@@ -62,37 +62,39 @@ class TipoPlanta extends Model
     }
 
     public function obtenerTiposPlantas()
-{
-    $reference = $this->database->getReference($this->tablename);
-    $tiposPlantas = $reference->getValue();
+    {
+        $reference = $this->database->getReference($this->tablename);
+        $tiposPlantas = $reference->getValue();
 
-    $tiposPlantasArray = [];
+        $tiposPlantasArray = [];
 
-    foreach ($tiposPlantas as $id => $tipoPlanta) {
-        // Verifica si 'nombre' está definido en $tipoPlanta
-        if (isset($tipoPlanta['nombre'])) {
-            $nombre = $tipoPlanta['nombre'];
-        } else {
-            $nombre = 'Nombre no definido'; // o el valor que desees establecer en caso de que 'nombre' no esté definido
+        foreach ($tiposPlantas as $id => $tipoPlanta) {
+            // Verifica si 'nombre' está definido en $tipoPlanta
+            if (isset($tipoPlanta['nombre'])) {
+                $nombre = $tipoPlanta['nombre'];
+            } else {
+                $nombre = 'Nombre no definido'; // o el valor que desees establecer en caso de que 'nombre' no esté definido
+            }
+
+            $tiposPlantasArray[] = [
+                'id' => $id,
+                'imagen' => $tipoPlanta['imagen'],
+                'nombre' => $nombre
+            ];
         }
 
-        $tiposPlantasArray[] = [
-            'id' => $id,
-            'imagen' => $tipoPlanta['imagen'],
-            'nombre' => $nombre
-        ];
+        return $tiposPlantasArray;
     }
-
-    return $tiposPlantasArray;
-}
+    
     public function obtenerTipoPlanta($id)
     {
         $tipoPlanta = $this->database->getReference($this->tablename)->getChild($id)->getValue();
         return $tipoPlanta;
     }
 
-    public function actualizarTipoPlanta($id, $nombre,$imagen)
-    {        $storage = app('firebase.storage');
+    public function actualizarTipoPlanta($id, $nombre, $imagen)
+    {
+        $storage = app('firebase.storage');
         $bucket = $storage->getBucket();
 
         $nombreImagen = $imagen->getClientOriginalName();
@@ -109,7 +111,7 @@ class TipoPlanta extends Model
             'imagen' => $path
         ]);
 
-        return true;
+        return true;
     }
 
     public function eliminarTipoPlanta($id)

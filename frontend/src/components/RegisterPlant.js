@@ -20,7 +20,6 @@ const RegisterPlant = () => {
   const [tiposPlanta, setTiposPlanta] = useState([]);
   const navigate = useNavigate(); 
   useEffect(() => {
-    // Obtener los tipos de planta disponibles
     const obtenerTiposPlanta = async () => {
       try {
         const response = await axios.get(`${endpoint}/obtenerTiposPlantas`);
@@ -74,15 +73,9 @@ const RegisterPlant = () => {
     setImagenes([...e.target.files]);
   };
 
-  const inputStyle = {
-    width: "50%",
-  };
-
   const handleTinyMCEChange = (content, editor) => {
-    // Actualiza el estado de la descripción con el contenido del editor TinyMCE
     setDescripcion(content);
   };
-
 
   const handleNombreComunChange = (index, value) => {
     const newNombresComunes = [...nombresComunes];
@@ -102,6 +95,11 @@ const RegisterPlant = () => {
 
   const handleTipoPlantaChange = (e) => {
     setTipoPlanta(e.target.value);
+  };
+
+  const handleGenerateQR = () => {
+    // Aquí puedes agregar la lógica para redireccionar o hacer lo que necesites
+    console.log("Generar QR y redireccionar");
   };
 
   return (
@@ -205,7 +203,6 @@ const RegisterPlant = () => {
                   onChange={handleImagenesChange}
                 />
               </div>
-              {/* Mostrar previsualización de imágenes */}
               <div className="mb-3">
                 {imagenes.map((imagen, index) => (
                   <img
@@ -222,6 +219,11 @@ const RegisterPlant = () => {
                 </button>
               </div>
             </form>
+            {registered && (
+              <div className="text-center">
+                <QRCode value="URL de redirección" />
+              </div>
+            )}
           </div>
         </div>
       </div>

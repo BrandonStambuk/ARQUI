@@ -90,21 +90,20 @@ const App = () => {
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<ImageSection />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/plant/:id" element={<Plant />} />
+          <Route path="/" element={user ? <Table/>: <ImageSection />} />
+          <Route path="/about" element={user ? <Table/>: <About />} />
+          <Route path="/plant/:id" element={user? <Table/>: <Plant />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<RegisterPlant />} />
-          <Route path="/table" element={user ? <Table /> : <Table />} />
-          <Route path="/types" element={<Types />} />
-          <Route path="/types/:tipoId" element={<Plants />} />
-          <Route path="/editPlant/:id" element={<EditPlant />} />
-          <Route path="/Plants" element={<Plants />} />
+          <Route path="/register" element={user?<RegisterPlant /> : <LoginUser/>} />
+          <Route path="/table" element={user ? <Table /> : <LoginUser />} />
+          <Route path="/types" element={user? <Table/>:<Types />} />
+          <Route path="/types/:tipoId" element={user? <Table/> : <Plants />} />
+          <Route path="/editPlant/:id" element={user? <EditPlant/>: <LoginUser/>} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/registerUser" element={<RegisterUser />} />
           <Route path="/loginUser" element={<LoginUser />} />
           <Route path="/signout" element={<SignOut />} />
-          <Route path="/tipoPlanta" element={<TipoPlanta />} />
+          <Route path="/tipoPlanta" element={user?<TipoPlanta />:<LoginUser/>} />
         </Routes>
       </BrowserRouter>
     </div>
