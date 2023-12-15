@@ -4,7 +4,7 @@ import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } f
 import { useNavigate } from "react-router-dom";
 import { useEffect } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
-
+import Navbar from "./Navbar";
 const endpoint = "http://127.0.0.1:8000/api";
 // Configura tu proyecto Firebase
 const firebaseConfig = {
@@ -54,6 +54,7 @@ const LoginComponent = () => {
 
   return (
     <div>
+      <Navbar></Navbar>
       <input type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
       <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
       <button onClick={handleLogin}>Login</button>

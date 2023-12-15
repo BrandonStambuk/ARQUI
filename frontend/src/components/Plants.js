@@ -6,8 +6,10 @@ import "slick-carousel/slick/slick-theme.css";
 import { Card } from "react-bootstrap";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import Navbar from "./Navbar";
-import fondoImagen from "../images/jardin3.jpg";
+import { Spinner } from "react-bootstrap";
 
+import fondoImagen from "../images/jardin3.jpg";
+import "../css/Plants.css";
 const Plants = () => {
   const params = useParams();
   const { tipoId } = params;
@@ -16,12 +18,16 @@ const Plants = () => {
   useEffect(() => {
     const obtenerPlantasPorTipo = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/api/obtenerTipoPlanta/${tipoId}`);
+        const response = await fetch(
+          `http://127.0.0.1:8000/api/obtenerTipoPlanta/${tipoId}`
+        );
         const data = await response.json();
         if (Array.isArray(data.data) && data.data.length > 0) {
           setPlantas(data.data);
         } else {
-          console.error("La respuesta de la API no contiene un array válido de plantas.");
+          console.error(
+            "La respuesta de la API no contiene un array válido de plantas."
+          );
         }
       } catch (error) {
         console.error("Error al obtener plantas:", error);
@@ -41,10 +47,9 @@ const Plants = () => {
 
   console.log("ID del Tipo de Planta:", tipoId);
 
-   return (
+  return (
     <div
       style={{
-        backgroundImage: `url(${fondoImagen})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         minHeight: "100vh",
@@ -52,11 +57,15 @@ const Plants = () => {
     >
       <Navbar />
       <div className="container mt-5">
-        <h2>Plantas Asociadas al Tipo {tipoId}</h2>
+        <h2>Plantas del jardin segun tipo</h2>
         {plantas.length > 0 ? (
           <Slider {...settings}>
             {plantas.map((planta) => (
-              <Link key={planta.id} to={`/plant/${planta.id}`} style={{ textDecoration: 'none' }}>
+              <Link
+                key={planta.id}
+                to={`/plant/${planta.id}`}
+                style={{ textDecoration: "none" }}
+              >
                 <div>
                   <Card style={{ width: "18rem" }}>
                     <Card.Img variant="top" src={planta.imagen} />
@@ -69,7 +78,13 @@ const Plants = () => {
             ))}
           </Slider>
         ) : (
-          <p>No hay plantas asociadas a este tipo.</p>
+          <div className="text-center mt-5">
+            <Spinner
+              animation="border"
+              style={{ color: "#004d40" }}
+            />
+            <p className="mt-3">Cargando plantas...</p>
+          </div>
         )}
       </div>
     </div>
@@ -81,7 +96,13 @@ const NextArrow = (props) => {
   return (
     <FaChevronRight
       className={className}
-      style={{ ...style, display: "block", color: "white", fontSize: "24px", cursor: "pointer" }}
+      style={{
+        ...style,
+        display: "block",
+        color: "white",
+        fontSize: "24px",
+        cursor: "pointer",
+      }}
       onClick={onClick}
     />
   );
@@ -92,7 +113,13 @@ const PrevArrow = (props) => {
   return (
     <FaChevronLeft
       className={className}
-      style={{ ...style, display: "block", color: "white", fontSize: "24px", cursor: "pointer" }}
+      style={{
+        ...style,
+        display: "block",
+        color: "white",
+        fontSize: "24px",
+        cursor: "pointer",
+      }}
       onClick={onClick}
     />
   );

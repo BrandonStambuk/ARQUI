@@ -22,6 +22,9 @@ body {
     text-align: justify;
 }
 
+
+
+
 .card{
   background-image: url('../images/aloe-vera.jpg');
   background: #F8F9FD;
@@ -30,4 +33,5 @@ body {
   border: 5px solid rgb(255, 255, 255);
   box-shadow: rgba(5, 5, 5, 0.878) 0px 30px 30px -20px;
   margin: 20px;
+  border-radius: 20px;
 }

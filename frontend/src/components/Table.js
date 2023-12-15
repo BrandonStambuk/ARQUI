@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import QRious from 'qrious';
-
+import NavbarAdmin from "./NavbarAdmin";
 const PlantList = () => {
   const [plantas, setPlantas] = useState([]);
 
@@ -47,6 +47,7 @@ const PlantList = () => {
 
   return (
     <div>
+      <NavbarAdmin></NavbarAdmin>
       <div className="card bg-transparent">
         <h1 className="card-header">Listado de Plantas</h1>
         <div className="tarjeta-body">
