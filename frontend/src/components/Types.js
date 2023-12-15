@@ -4,7 +4,7 @@ import Navbar from "./Navbar";
 import jardin2 from "../images/jardin2.jpg";
 import { initializeApp } from "firebase/app";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
-
+import { Spinner } from "react-bootstrap";
 const getFirebaseImageUrl = async (imagePath) => {
   const storage = getStorage();
   const imageRef = ref(storage, `${imagePath}`);
@@ -37,7 +37,7 @@ const ImageLoader = ({ imagePath, alt }) => {
 
 const Types = () => {
   const estiloFondo = {
-    backgroundImage: `url(${jardin2})`,
+   
     backgroundSize: "cover",
     backgroundPosition: "center",
     height: "200vh",
@@ -109,12 +109,15 @@ const Types = () => {
     <div style={{ ...contenedorPrincipal, ...estiloFondo }}>
       <Navbar />
       <div className="container mt-5">
-        <h2>Tipo de Plantas</h2>
+        <h2 className="card-title">Tipo de Plantas</h2>
         <div className="row">
           {Array.isArray(tiposPlantas) && tiposPlantas.length > 0 ? (
             tiposPlantas.map((tipo) => renderCard(tipo))
           ) : (
-            <p>Cargando tipos de plantas...</p>
+            <div className="text-center mt-5">
+        <Spinner animation="border" variant="dark" />
+        <p className="mt-3">Cargando datos de la planta...</p>
+      </div>
           )}
         </div>
       </div>

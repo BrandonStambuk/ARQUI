@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../css/ImageSection.css";
-import Navbar from "./Navbar";
+import NavbarAdmin from "./NavbarAdmin";
 import axios from "axios";
 import fondoImagen from "../images/jardin3.jpg"; // Asegúrate de proporcionar la ruta correcta
 import { Editor } from "@tinymce/tinymce-react";
-import QRCode from "qrcode.react"; // Asegúrate de instalar este paquete
+import MySwal from "sweetalert2";
+import { useNavigate } from "react-router-dom"; // Importa useNavigate desde react-router-dom
+// Usa useNavigate para obtener la función navigate
 
 const endpoint = "http://127.0.0.1:8000/api";
 
@@ -16,8 +18,7 @@ const RegisterPlant = () => {
   const [imagenes, setImagenes] = useState([]);
   const [tipoPlanta, setTipoPlanta] = useState("");
   const [tiposPlanta, setTiposPlanta] = useState([]);
-  const [registered, setRegistered] = useState(false); // Nueva variable de estado
-
+  const navigate = useNavigate(); 
   useEffect(() => {
     const obtenerTiposPlanta = async () => {
       try {
@@ -56,7 +57,13 @@ const RegisterPlant = () => {
       });
 
       console.log(response.data);
-      setRegistered(true);
+      MySwal.fire({
+        icon: "success",
+        title: "Planta registrada correctamente",
+        confirmButtonText: "Ir a tabla de plantas",
+      }).then(() => {
+        navigate("/table"); // O redirige a la página que desees después de la alerta
+      });
     } catch (error) {
       console.log("Error al enviar la solicitud:", error);
     }
@@ -98,12 +105,11 @@ const RegisterPlant = () => {
   return (
     <div
       style={{
-        backgroundImage: `url(${fondoImagen})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
-      <Navbar />
+      <NavbarAdmin />
       <div className="container mt-5">
         <div className="card">
           <div className="card-body">
@@ -214,16 +220,6 @@ const RegisterPlant = () => {
                 <button type="submit" className="btn btn-primary">
                   Enviar
                 </button>
-                {registered && (
-                  <button
-                    type="button"
-                    onClick={handleGenerateQR}
-                    className="btn btn-primary"
-                    style={{ marginLeft: "5px" }}
-                  >
-                    Generar QR
-                  </button>
-                )}
               </div>
             </form>
             {registered && (

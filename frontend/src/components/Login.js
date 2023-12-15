@@ -21,6 +21,7 @@ function Login() {
 
   return (
     <div style={contenedorPrincipal}>
+      <Navbar></Navbar>
       {/* Agrega tus contenidos dentro de este div */}
       <div className="container-fluid" style={estiloFondo}>
         {/* Aquí puedes agregar tu contenido */}
