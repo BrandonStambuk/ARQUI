@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../css/ImageSection.css";
-import Navbar from "./Navbar";
+import NavbarAdmin from "./NavbarAdmin";
 import axios from "axios";
 import fondoImagen from "../images/jardin3.jpg"; // Asegúrate de proporcionar la ruta correcta
 import { Editor } from "@tinymce/tinymce-react";
@@ -111,7 +111,7 @@ const RegisterPlant = () => {
         backgroundPosition: "center",
       }}
     >
-      <Navbar />
+      <NavbarAdmin />
       <div className="container mt-5">
         <div className="card">
           <div className="card-body">

@@ -1,4 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.min';
 import '../css/Navbar.css';
 import { Link } from 'react-router-dom';
 import ImageSection from './ImageSection';
@@ -17,7 +18,7 @@ function Navbar() {
               <Link className="nav-link" to="/">Home</Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/about">Sobre Martin Cardenas</Link>
+              <a className="nav-link" href="#about">Sobre Martin Cardenas</a>
             </li>
             <li className="nav-item">
               <Link className="nav-link" to="/types">Tipos de plantas</Link>

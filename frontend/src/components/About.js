@@ -12,12 +12,18 @@ function About() {
     backgroundImage: `url(${imageAloe})`,
     backgroundSize: "cover",
     backgroundPosition: "center",
-    height: "200vh", // Ajusta la altura según tus necesidades
+    height: "150vh", // Ajusta la altura según tus necesidades
+    borderRadius: "50px",
+    //boxShadow: "-2px -19px 34px 0px rgba(0,0,0,0.75)",
+    //WebkitBoxShadow: "-2px -19px 34px 0px rgba(0,0,0,0.75)", // Prefijo para navegadores webkit (como Chrome y Safari)
+    //MozBoxShadow: "-2px -19px 34px 0px rgba(0,0,0,0.75)", // Prefijo para navegadores Firefox (Mozilla)
+    marginTop: "40px" // Ajusta el valor según tus necesidades
+
   };
+  
 
   return (
     <div className="container-imagen-aloe" style={estiloFondo}>
-      <Navbar></Navbar>
       <div className="row justify-content-center align-items-center vh-100 imagen-aloe">
         <div className="col-md-8">
           {/* Aumenta el ancho del card a 8 columnas en pantallas grandes */}

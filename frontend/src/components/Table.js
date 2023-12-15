@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import QRious from 'qrious';
 import NavbarAdmin from './NavbarAdmin';
 import { Navbar } from 'react-bootstrap';
+
 const PlantList = () => {
   const [plantas, setPlantas] = useState([]);
 
@@ -52,7 +53,7 @@ const PlantList = () => {
       <div className="card bg-transparent">
         <h1 className="card-header">Listado de Plantas</h1>
         <div className="tarjeta-body">
-          <table className="table">
+          <table className="table table-striped">
             <thead>
               <tr>
                 <th>Nombre Científico</th>
@@ -74,7 +75,7 @@ const PlantList = () => {
                       <Link to={`/editPlant/${planta.id}`} className="btn btn-primary mr-2">
                         Editar
                       </Link>
-                      <button onClick={() => handleEliminar(planta.id)} className="btn btn-danger">
+                      <button onClick={() => handleEliminar(planta.id)} className="btn btn-danger mr-2">
                         Eliminar
                       </button>
                       {/* Botón para generar QR */}
@@ -90,7 +91,7 @@ const PlantList = () => {
                           const newWindow = window.open();
                           newWindow.document.write(`<img src="${qr.toDataURL('image/png')}" alt="QR Code"/>`);
                         }}
-                        className="btn btn-info mr-2"
+                        className="btn btn-info"
                       >
                         QR
                       </button>

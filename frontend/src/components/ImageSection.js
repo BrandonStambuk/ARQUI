@@ -6,7 +6,7 @@ import Carrousel from './Carrousel';
 import jardin2 from "../images/jardin2.jpg";
 import imagen1 from "../images/j1.jpg";
 import imagen2 from "../images/j2.jpg";
-
+import About from './About';
 function ImageSection() {
   const estiloFondo = {
     backgroundSize: 'cover',
@@ -46,6 +46,7 @@ function ImageSection() {
                     </p>
                   </div>
                 </div>
+                <About></About>
               </div>
             </div>
           </div>

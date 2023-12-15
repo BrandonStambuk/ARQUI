@@ -57,7 +57,7 @@ const Plants = () => {
     >
       <Navbar />
       <div className="container mt-5">
-        <h2>Plantas del jardin segun tipo</h2>
+        <h2 className="card-title">Plantas del jardin segun tipo</h2>
         {plantas.length > 0 ? (
           <Slider {...settings}>
             {plantas.map((planta) => (
