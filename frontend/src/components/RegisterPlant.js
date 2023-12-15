@@ -165,16 +165,12 @@ const RegisterPlant = () => {
         apiKey="hza3mgcarp7rukdgkhnua1airq2522z41s0btsk5gqq64632" // Reemplaza con tu clave de API de TinyMCE
         value={descripcion}
         init={{
-          height: 300,
-          menubar: false,
-          plugins: [
-            "advlist autolink lists link image charmap print preview anchor",
-            "searchreplace visualblocks code fullscreen",
-            "insertdatetime media table paste code help wordcount",
-          ],
-          toolbar: `undo redo | formatselect | bold italic backcolor | \
-          alignleft aligncenter alignright alignjustify | \
-          bullist numlist outdent indent | removeformat | help`,
+          directionality: 'ltr',
+          setup: function (editor) {
+            editor.on('init', function () {
+             
+            });
+          },
         }}
         onEditorChange={handleTinyMCEChange}
       />

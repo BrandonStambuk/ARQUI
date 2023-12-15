@@ -43,7 +43,7 @@ function Plant() {
       try {
         const response = await axios.get(`http://127.0.0.1:8000/api/obtenerPlanta/${id}`);
         const data = response.data.data;
-
+  
         // Descargar las imágenes desde Firebase Storage
         const imagenesUrls = await Promise.all(
           data.imagenes.map(async (imageUrl) => {
@@ -53,22 +53,22 @@ function Plant() {
             return imageUrlDownload;
           })
         );
-
+  
         setPlantaData({
           id: data.id || '',
           nombreCientifico: data.nombreCientifico || '',
-          nombresComunes: data.nombresComunes || [],
+          nombresComunes: data.nombresComunes || [], // Asignación directa del array de nombres comunes
           descripcion: data.descripcion || '',
           tipoPlanta: data.tipoPlanta || '',
           imagenes: imagenesUrls || [],
         });
-
+  
         console.log('Datos de la planta:', data);
       } catch (error) {
         console.error('Error al obtener datos de la planta:', error);
       }
     };
-
+  
     obtenerDatosPlanta();
   }, [id]);
 
