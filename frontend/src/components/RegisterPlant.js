@@ -219,11 +219,7 @@ const RegisterPlant = () => {
                 </button>
               </div>
             </form>
-            {registered && (
-              <div className="text-center">
-                <QRCode value="URL de redirección" />
-              </div>
-            )}
+            
           </div>
         </div>
       </div>

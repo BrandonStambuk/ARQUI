@@ -95,7 +95,7 @@ function Plant() {
         <div className="col-md-12">
           <div className="card card-translucent p-4">
             <h1 className="titulo">{plantaData.nombreCientifico}</h1>
-            <h5 className="subtitulo">Nombres Comunes: {plantaData.nombresComunes.join(', ')}</h5>
+            <h5 className="subtitulo">Nombres Comunes: {plantaData.nombresComunes.map(nombre => nombre.nombre).join(', ')}</h5>
             <hr />
             <p className="descripcion-botanica text-left">
               <strong>Descripción Botánica:</strong>
